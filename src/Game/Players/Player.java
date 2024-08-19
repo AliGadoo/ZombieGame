@@ -11,19 +11,20 @@ public class Player {
 
     private double x, y;
 
-    Player(double x, double y) {
+    public Player(double x, double y) {
         this.x = x;
         this.y = y;
     }
-    double getX() {
+
+    public double getX() {
         return x;
     }
 
-    double getY() {
+    public double getY() {
         return y;
     }
 
-    void drawPlayer(GL gl, double x, double y, int index, float xScale, float yScale){
+    public void drawPlayer(GL gl, double x, double y, int index, float xScale, float yScale){
 
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, AnimEventListener.textures[index]);    // Turn Blending On
@@ -46,6 +47,8 @@ public class Player {
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
-
+    }
+    public boolean playerIsDead (int health) {
+        return health > 0;
     }
 }

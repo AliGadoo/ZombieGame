@@ -1,5 +1,6 @@
 package Game;
 
+import Game.Players.Player;
 import Texture.TextureReader;
 
 import javax.media.opengl.GL;
@@ -8,12 +9,16 @@ import javax.media.opengl.glu.GLU;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.BitSet;
 
 public class AnimEventListener extends AnimationListener{
 
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
-
-    public static String[] textureNames = {};
+    public static final double End_of_screen = MAX_WIDTH - 4;
+    public static final double start_of_screen = 4 ;
+    Player player1;
+    int player1X = 10 , player1Y = 50;
+    public static String[] textureNames = {"Player1//P1move0.png"};
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     public static int[] textures = new int[textureNames.length];
 
@@ -47,7 +52,12 @@ public class AnimEventListener extends AnimationListener{
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
-
+        GL gl = glAutoDrawable.getGL();
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+        gl.glLoadIdentity();
+        handleKeyPress();
+        player1 = new Player(player1X,player1Y);
+        player1.drawPlayer(gl , player1.getX() , player1.getY() ,0,10,10);
     }
 
     @Override
@@ -59,19 +69,49 @@ public class AnimEventListener extends AnimationListener{
     public void displayChanged(GLAutoDrawable glAutoDrawable, boolean b, boolean b1) {
 
     }
-    @Override
-    public void keyTyped(KeyEvent e) {
+    public void handleKeyPress() {
+        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                if (player1.getX() > start_of_screen) {
+                    player1X--;
+                }
+            }
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (player1.getX() < End_of_screen ) {
+                    player1X++;
+                }
+            }
+        if (isKeyPressed(KeyEvent.VK_UP)) {
+            if (player1.getY() < End_of_screen ) {
+                player1Y++;
+            }
+        }
+        if (isKeyPressed(KeyEvent.VK_DOWN)) {
+            if (player1.getY() > start_of_screen) {
+                player1Y--;
+            }
+        }
+    }
 
+    public BitSet keyBits = new BitSet(256);
+
+    @Override
+    public void keyPressed(final KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        keyBits.set(keyCode);
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-
+    public void keyReleased(final KeyEvent event) {
+        int keyCode = event.getKeyCode();
+        keyBits.clear(keyCode);
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyTyped(final KeyEvent event) {
+    }
 
+    public boolean isKeyPressed(final int keyCode) {
+        return keyBits.get(keyCode);
     }
 
     @Override
