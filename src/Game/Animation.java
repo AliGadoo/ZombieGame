@@ -17,7 +17,7 @@ public class Animation extends JFrame {
         GLCanvas glcanvas;
         Animator animator;
 
-        AnimationListener listener = new GameGLEventListener();
+        AnimationListener listener = new AnimEventListener();
         glcanvas = new GLCanvas();
         glcanvas.addGLEventListener(listener);
         glcanvas.addKeyListener(listener);
