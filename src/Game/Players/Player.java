@@ -49,6 +49,6 @@ public class Player {
         gl.glDisable(GL.GL_BLEND);
     }
     public boolean playerIsDead (int health) {
-        return health > 0;
+        return health <= 0;
     }
 }

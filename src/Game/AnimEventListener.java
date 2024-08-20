@@ -42,6 +42,7 @@ public class AnimEventListener extends AnimationListener{
             zombieMove  ={42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58};
 
     int zombieAnimationIndex=0;
+    int p1AnimationIndex=0;
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     public static int[] textures = new int[textureNames.length];
 
@@ -79,8 +80,9 @@ public class AnimEventListener extends AnimationListener{
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         handleKeyPress();
+        p1AnimationIndex %= player1Move.length;
         player1 = new Player(player1X,player1Y);
-        player1.drawPlayer(gl , player1.getX() , player1.getY() ,0,10,10);
+        player1.drawPlayer(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
     }
 
     @Override
@@ -96,21 +98,25 @@ public class AnimEventListener extends AnimationListener{
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
                 if (player1.getX() > start_of_screen) {
                     player1X--;
+                    p1AnimationIndex++;
                 }
             }
             if (isKeyPressed(KeyEvent.VK_RIGHT)) {
                 if (player1.getX() < End_of_screen ) {
                     player1X++;
+                    p1AnimationIndex++;
                 }
             }
         if (isKeyPressed(KeyEvent.VK_UP)) {
             if (player1.getY() < End_of_screen ) {
                 player1Y++;
+                p1AnimationIndex++;
             }
         }
         if (isKeyPressed(KeyEvent.VK_DOWN)) {
             if (player1.getY() > start_of_screen) {
                 player1Y--;
+                p1AnimationIndex++;
             }
         }
     }
