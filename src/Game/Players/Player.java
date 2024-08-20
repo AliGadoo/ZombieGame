@@ -4,16 +4,20 @@ import Game.AnimEventListener;
 
 import javax.media.opengl.GL;
 
+import java.util.ArrayList;
+
 import static Game.AnimEventListener.MAX_HEIGHT;
 import static Game.AnimEventListener.MAX_WIDTH;
 
 public class Player {
 
     private double x, y;
+    private ArrayList<Bullet> bullets;
 
     public Player(double x, double y) {
         this.x = x;
         this.y = y;
+        this.bullets = new ArrayList<>();
     }
 
     public double getX() {
@@ -24,31 +28,35 @@ public class Player {
         return y;
     }
 
-    public void drawPlayer(GL gl, double x, double y, int index, float xScale, float yScale){
-
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, AnimEventListener.textures[index]);    // Turn Blending On
-
-        gl.glPushMatrix();
-        gl.glTranslated(x / (MAX_WIDTH / 2.0) - 1, y / (MAX_HEIGHT / 2.0) - 1, 0);
-        gl.glScaled(0.01 * xScale, 0.01 * yScale, 1);
-        //System.out.println(x +" " + y);
-        gl.glBegin(GL.GL_QUADS);
-        // Front Face
-        gl.glTexCoord2f(0.0f, 0.0f);
-        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 0.0f);
-        gl.glVertex3f(1.0f, -1.0f, -1.0f);
-        gl.glTexCoord2f(1.0f, 1.0f);
-        gl.glVertex3f(1.0f, 1.0f, -1.0f);
-        gl.glTexCoord2f(0.0f, 1.0f);
-        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
-        gl.glEnd();
-        gl.glPopMatrix();
-
-        gl.glDisable(GL.GL_BLEND);
+    public void  setX(double x) {
+        this.x = x;
     }
+
+    public void  setY(double y) {
+        this.y = y;
+    }
+
     public boolean playerIsDead (int health) {
         return health <= 0;
+    }
+
+    public void shoot() {
+        bullets.add(new Bullet(x,y));
+    }
+
+    public void updateBullets() {
+        for (int i = 0; i < bullets.size(); i++) {
+            Bullet bullet = bullets.get(i);
+            bullet.moveBullet();
+            if (bullet.getX() < 0 || bullet.getX() > MAX_WIDTH || bullet.getY() < 0 || bullet.getY() > MAX_HEIGHT) {
+                bullets.remove(i);
+                i--;
+            }
+        }
+    }
+    public void drawBullets(GL gl) {
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).drawBullet(gl , 10 , 10);
+        }
     }
 }

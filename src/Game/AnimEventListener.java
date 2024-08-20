@@ -46,6 +46,32 @@ public class AnimEventListener extends AnimationListener{
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     public static int[] textures = new int[textureNames.length];
 
+
+    public void drawSprite(GL gl, double x, double y, int index, float xScale, float yScale){
+
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, AnimEventListener.textures[index]);    // Turn Blending On
+
+        gl.glPushMatrix();
+        gl.glTranslated(x / (MAX_WIDTH / 2.0) - 1, y / (MAX_HEIGHT / 2.0) - 1, 0);
+        gl.glScaled(0.01 * xScale, 0.01 * yScale, 1);
+        //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -72,6 +98,8 @@ public class AnimEventListener extends AnimationListener{
                 e.printStackTrace();
             }
         }
+        player1 = new Player(player1X,player1Y);
+
     }
 
     @Override
@@ -81,8 +109,10 @@ public class AnimEventListener extends AnimationListener{
         gl.glLoadIdentity();
         handleKeyPress();
         p1AnimationIndex %= player1Move.length;
-        player1 = new Player(player1X,player1Y);
-        player1.drawPlayer(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
+
+        player1.updateBullets();
+        drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
+        player1.drawBullets(gl);
     }
 
     @Override
@@ -97,27 +127,30 @@ public class AnimEventListener extends AnimationListener{
     public void handleKeyPress() {
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
                 if (player1.getX() > start_of_screen) {
-                    player1X--;
+                    player1.setX(--player1X);
                     p1AnimationIndex++;
                 }
             }
             if (isKeyPressed(KeyEvent.VK_RIGHT)) {
                 if (player1.getX() < End_of_screen ) {
-                    player1X++;
+                    player1.setX(++player1X);
                     p1AnimationIndex++;
                 }
             }
         if (isKeyPressed(KeyEvent.VK_UP)) {
             if (player1.getY() < End_of_screen ) {
-                player1Y++;
+                player1.setY(++player1Y);
                 p1AnimationIndex++;
             }
         }
         if (isKeyPressed(KeyEvent.VK_DOWN)) {
             if (player1.getY() > start_of_screen) {
-                player1Y--;
+                player1.setY(--player1Y);
                 p1AnimationIndex++;
             }
+        }
+        if (isKeyPressed(KeyEvent.VK_SPACE)) {
+            player1.shoot();
         }
     }
 
