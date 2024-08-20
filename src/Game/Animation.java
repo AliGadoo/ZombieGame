@@ -27,7 +27,7 @@ public class Animation extends JFrame {
         animator.add(glcanvas);
         animator.start();
 
-        setTitle("Guns");
+        setTitle("Zombie game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 700);
         setLocationRelativeTo(null);
