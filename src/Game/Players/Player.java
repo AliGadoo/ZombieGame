@@ -14,7 +14,9 @@ public class Player {
     private double x, y;
     private ArrayList<Bullet> bullets;
     private int MAX_BULLETS = 10;
-    private boolean emptyAmmo;
+    private int counterShots = 0;
+    private long lastShotTime = 0;
+    private int delayTime = 400;
 
     public Player(double x, double y) {
         this.x = x;
@@ -43,23 +45,20 @@ public class Player {
     }
 
     public void shoot() {
-        if (emptyAmmo) {
+        long currentTime = System.currentTimeMillis();
+        if (counterShots >= MAX_BULLETS) {
             System.out.println("need to reload1");
             return;
         }
-        if (bullets.size() < MAX_BULLETS) {
+        if (currentTime - lastShotTime >= delayTime) {
             bullets.add(new Bullet(x, y));
-            if (bullets.size() == MAX_BULLETS) {
-                emptyAmmo = true;
-            }
-        } else {
-            System.out.println("need to reload2");
+            lastShotTime = currentTime;
+            counterShots++;
         }
     }
 
     public void reload() {
-        bullets.clear();
-        emptyAmmo = false;
+        counterShots = 0;
     }
 
     public void updateBullets() {
