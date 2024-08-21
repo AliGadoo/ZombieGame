@@ -105,7 +105,7 @@ public class AnimEventListener extends AnimationListener{
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
-        gl.glClearColor(1.0f, 0f, 0f, 1.0f);    //This Will Clear The Background Color To Black
+        gl.glClearColor(1.0f, 1f, 0f, 1.0f);    //This Will Clear The Background Color To Black
         gl.glEnable(GL.GL_TEXTURE_2D);  // Enable Texture Mapping
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
         gl.glGenTextures(textureNames.length, textures, 0);
@@ -198,7 +198,7 @@ public class AnimEventListener extends AnimationListener{
                 p1AnimationIndex++;
             }
         }
-        if (isKeyPressed(KeyEvent.VK_SPACE)) {
+        if (isKeyPressed(KeyEvent.VK_SHIFT)) {
             player1.shoot();
         }
         if(isKeyPressed(KeyEvent.VK_R)){
