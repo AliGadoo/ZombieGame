@@ -1,11 +1,13 @@
 package Game;
 
+import Game.Gui.Menu;
 import Game.Players.Player;
 import Texture.TextureReader;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -18,6 +20,8 @@ public class AnimEventListener extends AnimationListener{
     public static final double start_of_screen = 4 ;
     Player player1;
     int player1X = 10 , player1Y = 50;
+    double xPosition = 0, yPosition = 0;
+    int whatdraw = 0;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -34,7 +38,8 @@ public class AnimEventListener extends AnimationListener{
             "Zombie//Zmove0.png","Zombie//Zmove1.png","Zombie//Zmove2.png","Zombie//Zmove3.png","Zombie//Zmove4.png"
             ,"Zombie//Zmove5.png","Zombie//Zmove6.png","Zombie//Zmove7.png","Zombie//Zmove8.png","Zombie//Zmove9.png"
             ,"Zombie//Zmove10.png","Zombie//Zmove11.png","Zombie//Zmove12.png","Zombie//Zmove13.png","Zombie//Zmove14.png"
-            ,"Zombie//Zmove15.png","Zombie//Zmove16.png",
+            ,"Zombie//Zmove15.png","Zombie//Zmove16.png"
+            ,"Menu//PLAYBUTTON.png","Menu//SETTINGS.png","Menu//HOW TO PLAY.png","Menu//EXITBUTTON.png","Menu//BACKBUTTON.png","Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -56,6 +61,26 @@ public class AnimEventListener extends AnimationListener{
         gl.glTranslated(x / (MAX_WIDTH / 2.0) - 1, y / (MAX_HEIGHT / 2.0) - 1, 0);
         gl.glScaled(0.01 * xScale, 0.01 * yScale, 1);
         //System.out.println(x +" " + y);
+        gl.glBegin(GL.GL_QUADS);
+        // Front Face
+        gl.glTexCoord2f(0.0f, 0.0f);
+        gl.glVertex3f(-1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 0.0f);
+        gl.glVertex3f(1.0f, -1.0f, -1.0f);
+        gl.glTexCoord2f(1.0f, 1.0f);
+        gl.glVertex3f(1.0f, 1.0f, -1.0f);
+        gl.glTexCoord2f(0.0f, 1.0f);
+        gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
+        gl.glDisable(GL.GL_BLEND);
+    }
+    public void drawBackground(GL gl){
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures[textures.length-1]);	// Turn Blending On
+
+        gl.glPushMatrix();
         gl.glBegin(GL.GL_QUADS);
         // Front Face
         gl.glTexCoord2f(0.0f, 0.0f);
@@ -108,11 +133,20 @@ public class AnimEventListener extends AnimationListener{
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         handleKeyPress();
-        p1AnimationIndex %= player1Move.length;
+        Menu menu = new Menu();
+//        p1AnimationIndex %= player1Move.length;
+//
+//        player1.updateBullets();
+//        drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
+//        player1.drawBullets(gl);
+    switch (whatdraw){
+        case 0:
+            menu.drawMenu(gl);
 
-        player1.updateBullets();
-        drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
-        player1.drawBullets(gl);
+            break;
+        case 1:
+            break;
+    }
     }
 
     @Override
@@ -178,7 +212,25 @@ public class AnimEventListener extends AnimationListener{
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        double x = e.getX();
+        double y = e.getY();
 
+        System.out.println(x+" "+y);
+
+        Component c = e.getComponent();
+        double width = c.getWidth();
+        double height = c.getHeight();
+        System.out.println(width+" "+height);
+
+        xPosition = (int) ((x / width) * 100);
+        yPosition = ((int) ((y / height) * 100));
+        yPosition = 100 - yPosition;
+
+        System.out.println("x "+xPosition+" y "+yPosition);
+
+        if (xPosition >=40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 40){
+            System.exit(0);
+        }
     }
 
     @Override
