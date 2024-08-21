@@ -148,7 +148,7 @@ public class AnimEventListener extends AnimationListener{
             menu.drawMenu(gl);
             if (mute== false) {
 
-                menu.playsound("Score.mp3");
+                menu.playsound("StartSound.mp3");
                 menu.mediaPlayer.setMute(false);
 
             }
