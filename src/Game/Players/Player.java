@@ -17,6 +17,7 @@ public class Player {
     private int counterShots = 0;
     private long lastShotTime = 0;
     private int delayTime = 400;
+    public int health = 3;
 
     public Player(double x, double y) {
         this.x = x;
@@ -40,7 +41,7 @@ public class Player {
         this.y = y;
     }
 
-    public boolean playerIsDead (int health) {
+    public boolean playerIsDead () {
         return health <= 0;
     }
 
@@ -76,4 +77,8 @@ public class Player {
             bullets.get(i).drawBullet(gl , 10 , 10);
         }
     }
+   public void getDamaged(){
+      health =  health-1;
+    }
+
 }
