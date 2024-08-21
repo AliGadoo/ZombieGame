@@ -21,7 +21,7 @@ public class AnimEventListener extends AnimationListener{
     Player player1;
     int player1X = 10 , player1Y = 50;
     double xPosition = 0, yPosition = 0;
-    int whatdraw = 0;
+    int whatdraw = 1;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -134,17 +134,18 @@ public class AnimEventListener extends AnimationListener{
         gl.glLoadIdentity();
         handleKeyPress();
         Menu menu = new Menu();
-//        p1AnimationIndex %= player1Move.length;
-//
-//        player1.updateBullets();
-//        drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
-//        player1.drawBullets(gl);
+
     switch (whatdraw){
         case 0:
             menu.drawMenu(gl);
 
             break;
         case 1:
+            p1AnimationIndex %= player1Move.length;
+
+            player1.updateBullets();
+            drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
+            player1.drawBullets(gl);
             break;
     }
     }
@@ -185,6 +186,9 @@ public class AnimEventListener extends AnimationListener{
         }
         if (isKeyPressed(KeyEvent.VK_SPACE)) {
             player1.shoot();
+        }
+        if (isKeyPressed(KeyEvent.VK_R)) {
+            player1.reload();
         }
     }
 

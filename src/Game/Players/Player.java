@@ -13,6 +13,8 @@ public class Player {
 
     private double x, y;
     private ArrayList<Bullet> bullets;
+    private int MAX_BULLETS = 10;
+    private boolean emptyAmmo;
 
     public Player(double x, double y) {
         this.x = x;
@@ -41,7 +43,23 @@ public class Player {
     }
 
     public void shoot() {
-        bullets.add(new Bullet(x,y));
+        if (emptyAmmo) {
+            System.out.println("need to reload1");
+            return;
+        }
+        if (bullets.size() < MAX_BULLETS) {
+            bullets.add(new Bullet(x, y));
+            if (bullets.size() == MAX_BULLETS) {
+                emptyAmmo = true;
+            }
+        } else {
+            System.out.println("need to reload2");
+        }
+    }
+
+    public void reload() {
+        bullets.clear();
+        emptyAmmo = false;
     }
 
     public void updateBullets() {
