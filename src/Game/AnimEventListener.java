@@ -21,7 +21,7 @@ public class AnimEventListener extends AnimationListener{
     Player player1;
     int player1X = 10 , player1Y = 50;
     double xPosition = 0, yPosition = 0;
-    int whatdraw = 1;
+    int whatdraw = 0;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -230,6 +230,7 @@ public class AnimEventListener extends AnimationListener{
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
         double x = e.getX();
         double y = e.getY();
 
@@ -245,20 +246,26 @@ public class AnimEventListener extends AnimationListener{
         yPosition = 100 - yPosition;
 
         System.out.println("x "+xPosition+" y "+yPosition);
+        if (whatdraw == 0) {
 
-        if (xPosition >=40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 40){
-            System.exit(0);
-        }
-        if (xPosition >=92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5){
-            if (mute == true) {
-                mute = false;
-            } else {
-                mute = true;
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 40) {
+                System.exit(0);
             }
-            if (menu.mute ==6){
-                menu.mute = 7;
-            }else {
-                menu.mute = 6;
+            if (xPosition >= 92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5) {
+                if (mute == true) {
+                    mute = false;
+                } else {
+                    mute = true;
+                }
+                if (menu.mute == 6) {
+                    menu.mute = 7;
+                } else {
+                    menu.mute = 6;
+                }
+            }
+
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 65 && yPosition <= 75) {
+                whatdraw = 1;
             }
         }
     }

@@ -8,7 +8,7 @@ import javafx.scene.media.MediaPlayer;
 import static Game.AnimEventListener.textureNames;
 import static Game.AnimEventListener.MAX_HEIGHT;
 import static Game.AnimEventListener.MAX_WIDTH;
-import  Game.AnimEventListener;
+
 import javafx.util.Duration;
 
 //import sun.audio.AudioPlayer;
