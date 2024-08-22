@@ -7,10 +7,10 @@ import static Game.AnimEventListener.MAX_HEIGHT;
 import static Game.AnimEventListener.MAX_WIDTH;
 
 public class Zombie {
-    private int BloodTime= 10000;
-    private long deathTime =0;
+
     private double x, y;
     private double direction;
+    private Blood blood;
 
     public Zombie(double x, double y) {
         this.x = x;
@@ -36,7 +36,7 @@ public class Zombie {
         double distancePlayer1 = calculateDistance(player1X, player1Y);
         double distancePlayer2 = calculateDistance(player2X, player2Y);
 
-        if (distancePlayer1 < distancePlayer2||Math.abs(distancePlayer1 - distancePlayer2) < 10) {
+        if (distancePlayer1 < distancePlayer2||Math.abs(distancePlayer1 - distancePlayer2) < 20) {
             move(player1X, player1Y, speed);
         } else {
             move(player2X, player2Y, speed);
@@ -47,16 +47,7 @@ public class Zombie {
         double dy = py - y;
         return dx * dx + dy * dy;
     }
-    public void die() {
-        deathTime = System.currentTimeMillis();
-    }
-    public void zombieBlood(GL gl){
-        if (deathTime==0) return;
-        long currentTime = System.currentTimeMillis()-BloodTime;
-        if (currentTime-deathTime<=BloodTime){
-            DrawZombie(gl,x,y,41,10,10);
-        }
-    }
+
     public  void DrawZombie(GL gl, double x, double y, int index, float xScale, float yScale){
         gl.glEnable(GL.GL_BLEND);
         gl.glBindTexture(GL.GL_TEXTURE_2D, AnimEventListener.textures[index]);	// Turn Blending On

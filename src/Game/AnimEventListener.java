@@ -3,6 +3,7 @@ package Game;
 import Game.Gui.Menu;
 import Game.Players.Bullet;
 import Game.Players.Player;
+import Game.Zombies.Blood;
 import Game.Zombies.Zombie;
 import Texture.TextureReader;
 
@@ -30,11 +31,14 @@ public class AnimEventListener extends AnimationListener{
     int player2X = 30 , player2Y = 68;
     Player player2 = new Player(player2X,player2Y);
     int p1AnimationIndex=0;
-    int p2AnimationIndex = 20;
+    int p2AnimationIndex = 0;
     boolean isMultiPlayer = true;
 
     double xPosition = 0, yPosition = 0;
     int whatdraw = 0;
+    int wave =1;
+    int zombienum=8;
+    boolean isfinishied= false;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -47,7 +51,7 @@ public class AnimEventListener extends AnimationListener{
             "Player2//P2move15.png", "Player2//P2move16.png", "Player2//P2move17.png", "Player2//P2move18.png", "Player2//P2move19.png",
 
             "Bullet.png",// index 40
-            "Zombie//Blood.png",// 41
+            "Zombie//bloodsplat.png",// 41
             "Zombie//Zmove0.png","Zombie//Zmove1.png","Zombie//Zmove2.png","Zombie//Zmove3.png","Zombie//Zmove4.png"
             ,"Zombie//Zmove5.png","Zombie//Zmove6.png","Zombie//Zmove7.png","Zombie//Zmove8.png","Zombie//Zmove9.png"
             ,"Zombie//Zmove10.png","Zombie//Zmove11.png","Zombie//Zmove12.png","Zombie//Zmove13.png","Zombie//Zmove14.png"
@@ -55,10 +59,10 @@ public class AnimEventListener extends AnimationListener{
             ,"Menu//PLAYBUTTON.png","Menu//SETTINGS.png","Menu//HOW  PLAY.png","Menu//EXITBUTTON.png",
             "Menu//SINGLE PLAYER.png","Menu//MULITI PLAYERS .png",
             "Menu//soundOnWhite.png" ,"Menu//soundOffWhite.png",
-            "Menu//BACKBUTTON.png", //67
+            "Menu//BACKBUTTON.png",
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
-          "Menu//HOW TO PLAY.png", "Menu//background.png"
+            "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -67,7 +71,9 @@ public class AnimEventListener extends AnimationListener{
     Menu menu = new Menu();
     boolean mute = false;
     ArrayList<Zombie> zombies =new ArrayList<>();
+    ArrayList<Blood> blood = new ArrayList<>();
     int zombieAnimationIndex=0;
+
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     public static int[] textures = new int[textureNames.length];
@@ -188,6 +194,15 @@ public class AnimEventListener extends AnimationListener{
             break;
         case 1:
             drawSprite(gl, 50, 50, 69, 100, 100);
+            for (int i = 0; i < blood.size(); i++) {
+                Blood blood1 = blood.get(i);
+                if (!blood1.isEnd()) {
+                    drawSprite(gl, blood1.getX(), blood1.getY(), 41, 10, 10);
+                } else {
+                    blood.remove(i);
+                    --i;
+                }
+            }
             zombieAnimationIndex++;
             zombieAnimationIndex %= 17;
             p1AnimationIndex %= player1Move.length;
@@ -225,96 +240,121 @@ public class AnimEventListener extends AnimationListener{
             drawSprite(gl , 14 , 90 , 40 , 3,4);
             drawSprite(gl , 15 , 90 , 40 , 3,4);
 
-            if (zombies.isEmpty()) {
-                int yz = (int) (Math.random() * 65) + 10;
-                int xz = (int) (Math.random() * 15) + 100;
-                Zombie zombie = new Zombie(xz, yz);
-                zombies.add(0, zombie);
+            if (wave == 1 && zombies.isEmpty() && !isfinishied) {
+                spawnZombies(8);
+            } else if (wave == 2 && zombies.isEmpty() && !isfinishied) {
+                spawnZombies(12);
+            }else if (wave == 3 && zombies.isEmpty() && !isfinishied){
+                spawnZombies(20);
             }
-            Zombie zombie= zombies.get(0);
-            zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
-            if (!player1.playerIsDead()) {
-                zombie.move(player1.getX(), player1.getY(), .5);
+
+            for (int z= 0; z <zombies.size() ; z++) {
+
+                Zombie zombie = zombies.get(z);
+                zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
+                if (!player1.playerIsDead()) {
+                    zombie.move(player1.getX(), player1.getY(), .5);
+                }
+                if (isMultiPlayer) {
+                    if (!player1.playerIsDead() && !player2.playerIsDead()) {
+                        zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
+                    } else if (!player1.playerIsDead()) {
+                        zombie.move(player1.getX(), player1.getY(), 0.5);
+                    } else if (!player2.playerIsDead()) {
+                        zombie.move(player2.getX(), player2.getY(), .5);
+                    }
+                }
             }
-            zombieHitsPlayer(gl,zombie , player1);
-            bulletHitsZombie(gl,zombie, player1);
+                zombieHitsPlayer( zombies, player1);
+                bulletHitsZombie( zombies, player1);
 
-            if(isMultiPlayer){
-                if (!player1.playerIsDead() &&!player2.playerIsDead()) {
-                    zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5 );
-                } else if (!player1.playerIsDead()) {
-                    zombie.move(player1.getX(), player1.getY(), 0.5 );
-                } else if (!player2.playerIsDead()) {
-                    zombie.move(player2.getX(), player2.getY(), .5 );
+                if (isMultiPlayer) {
+
+                    player2.updateBullets();
+                    drawSprite(gl, player2.getX(), player2.getY(),player2Move[p2AnimationIndex] , 10, 10);
+                    player2.drawBullets(gl);
+                    p2AnimationIndex %=20;
+                    System.out.println(p2AnimationIndex);
+                    for (int i = 0; i < player2.health; i++) {
+                        drawSprite(gl, MAX_WIDTH - 2 - i * 5, 95, 68, 3, 3);
+                    }
+
+                    // max bullets
+                    DrawDigits(gl, 93, 90, player2.MAX_BULLETS, 2, 3);
+
+                    // slash sign
+                    gl.glPushMatrix();
+                    gl.glTranslated(91 / (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
+                    gl.glRotated(-30, 0, 0, 1);
+                    gl.glTranslated(-(91 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
+                    drawSprite(gl, 91, 90, 80, 1, 4);
+                    gl.glPopMatrix();
+
+                    // player bullets
+                    if (player2.MAX_BULLETS - player2.counterShots <= 9) {
+                        DrawDigits(gl, 88, 90, player2.MAX_BULLETS - player2.counterShots, 2, 3);
+
+                    } else {
+                        DrawDigits(gl, 87, 90, player2.MAX_BULLETS - player2.counterShots, 2, 3);
+                    }
+
+                    drawSprite(gl, 99, 90, 40, 3, 4);
+                    drawSprite(gl, 98, 90, 40, 3, 4);
+                    drawSprite(gl, 97, 90, 40, 3, 4);
+
+                    zombieHitsPlayer( zombies, player2);
+                    bulletHitsZombie( zombies, player2);
                 }
-                player2.updateBullets();
-                drawSprite(gl, player2.getX(), player2.getY(), p2AnimationIndex, 10, 10);
-                player2.drawBullets(gl);
-                p2AnimationIndex %= player2Move.length;
 
-                for (int i = 0; i < player2.health; i++) {
-                    drawSprite(gl, 2 + i * 5, 15, 68, 3, 3);
+            if (zombies.isEmpty() && !isfinishied) {
+                if (wave == 1) {
+                    wave = 2;
+                } else if (wave == 2) {
+
+                    isfinishied = true;
                 }
-
-                // max bullets
-                DrawDigits(gl , 9 , 10, player1.MAX_BULLETS, 2,3);
-
-                // slash sign
-                gl.glPushMatrix();
-                gl.glTranslated(6.5/ (MAX_WIDTH / 2.0) - 1, 10 / (MAX_HEIGHT / 2.0) - 1, 0);
-                gl.glRotated(-30, 0, 0, 1);
-                gl.glTranslated(-(6.5 / (MAX_WIDTH / 2.0) - 1), -(10 / (MAX_HEIGHT / 2.0) - 1), 0);
-                drawSprite(gl, 6.5, 10, 80, 1, 4);
-                gl.glPopMatrix();
-
-                // player bullets
-                if(player2.MAX_BULLETS - player2.counterShots <=9 ){
-                    DrawDigits(gl , 3 , 10 , player2.MAX_BULLETS - player2.counterShots, 2,3);
-
-                }else {
-                    DrawDigits(gl , 2 , 10 , player2.MAX_BULLETS - player2.counterShots, 2,3);
-                }
-
-                drawSprite(gl , 13 , 10 , 40 , 3,4);
-                drawSprite(gl , 14 , 10 , 40 , 3,4);
-                drawSprite(gl , 15 , 10 , 40 , 3,4);
-
-                zombieHitsPlayer(gl,zombie,player2);
-                bulletHitsZombie(gl,zombie, player2);
             }
             break;
-        case 2 :
-          menu.drawHowToPlay(gl,81);
 
-
-            break;
     }
     }
-
-    private void bulletHitsZombie(GL gl,Zombie zombie, Player player) {
+    private void spawnZombies(int n) {
+        for (int i = 0; i < n; i++) {
+            int yz = (int) (Math.random() * 60) + 10;
+            int xz = (int) (Math.random() * 50) + 100;
+            Zombie zombie = new Zombie(xz, yz);
+            zombies.add(zombie);
+        }
+    }
+    private void bulletHitsZombie(ArrayList<Zombie> zombies, Player player) {
         for (int i = 0; i < player.getBullets().size(); i++) {
             Bullet bullet = player.getBullets().get(i);
-            if(isColliding(bullet.getX() , bullet.getY() , 2 , zombie.getX() , zombie.getY() , 3)){
-                zombie.die();
-                zombie.zombieBlood(gl);
-                zombies.remove(zombie);
-                player.getBullets().remove(bullet);
-                player.setScore(player.getScore() + 1);
+            for (int j = 0; j < zombies.size(); j++) {
+                Zombie zombie = zombies.get(j);
+                if (isColliding(bullet.getX(), bullet.getY(), 2, zombie.getX(), zombie.getY(), 3)) {
+                    blood.add(new Blood(zombie.getX(), zombie.getY(), 1000));
+                    zombies.remove(zombie);
+                    player.getBullets().remove(bullet);
+                    player.setScore(player.getScore() + 1);
+                }
             }
 
         }
     }
 
-    private void zombieHitsPlayer (GL gl,Zombie zombie, Player player) {
-        if (isColliding( player.getX(), player.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
-            player.getDamaged();
-            zombie.die();
-            zombie.zombieBlood(gl);
-            zombies.remove(zombie);
-            if (player.playerIsDead()) {
-                System.out.println("Player is dead! Game over.");
+    private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
+        for (int i = 0; i < zombies.size(); i++) {
+            Zombie zombie= zombies.get(i);
+            if (isColliding( player.getX(), player.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
+                player.getDamaged();
+                blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
+                zombies.remove(zombie);
+                if (player.playerIsDead()) {
+                    System.out.println("Player is dead! Game over.");
+                }
             }
         }
+
     }
 
     @Override
@@ -449,20 +489,11 @@ public class AnimEventListener extends AnimationListener{
                     menu.mute = 6;
                 }
             }
-            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 40 && yPosition <= 50) {
-                whatdraw = 2;
-            }
-
 
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 65 && yPosition <= 75) {
                 whatdraw = 1;
             }
         }
-      if(whatdraw == 2){
-          if(xPosition>= 84  && xPosition <= 96 && yPosition >= 2 && yPosition <= 8){
-              whatdraw =0;
-          }
-      }
     }
 
     @Override
