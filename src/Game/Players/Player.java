@@ -52,7 +52,7 @@ public class Player {
             return;
         }
         if (currentTime - lastShotTime >= delayTime) {
-            bullets.add(new Bullet(x, y));
+            bullets.add(new Bullet(x+3, y-2.5));
             lastShotTime = currentTime;
             counterShots++;
         }
@@ -74,7 +74,7 @@ public class Player {
     }
     public void drawBullets(GL gl) {
         for (int i = 0; i < bullets.size(); i++) {
-            bullets.get(i).drawBullet(gl , 10 , 10);
+            bullets.get(i).drawBullet(gl , 3 , 3);
         }
     }
    public void getDamaged(){

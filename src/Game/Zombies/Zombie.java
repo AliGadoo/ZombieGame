@@ -9,6 +9,7 @@ import static Game.AnimEventListener.MAX_WIDTH;
 public class Zombie {
 
     private double x, y;
+    private double direction;
 
     public Zombie(double x, double y) {
         this.x = x;
@@ -20,6 +21,9 @@ public class Zombie {
 
     public double getY() {
         return y;
+    }
+    public void  move(double value){
+        x-=value;
     }
 
     public  void DrawZombie(GL gl, double x, double y, int index, float xScale, float yScale){

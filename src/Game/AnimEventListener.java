@@ -2,6 +2,7 @@ package Game;
 
 import Game.Gui.Menu;
 import Game.Players.Player;
+import Game.Zombies.Zombie;
 import Texture.TextureReader;
 
 import javax.media.opengl.GL;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.BitSet;
 
 public class AnimEventListener extends AnimationListener{
@@ -43,7 +45,7 @@ public class AnimEventListener extends AnimationListener{
             "Menu//SINGLE PLAYER.png","Menu//MULITI PLAYERS .png",
             "Menu//soundOnWhite.png" ,"Menu//soundOffWhite.png",
             "Menu//BACKBUTTON.png",
-            "heart.png",
+            "heart.png","Night.png" , // index 69
             "Menu//background.png"
     };
 
@@ -52,6 +54,7 @@ public class AnimEventListener extends AnimationListener{
             zombieMove  ={42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58};
     Menu menu = new Menu();
     boolean mute = false;
+    ArrayList<Zombie> zombies =new ArrayList<>();
     int zombieAnimationIndex=0;
     int p1AnimationIndex=0;
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -140,32 +143,51 @@ public class AnimEventListener extends AnimationListener{
         gl.glLoadIdentity();
         handleKeyPress();
 
-    switch (whatdraw){
+    switch (whatdraw) {
         case 0:
             menu.drawMenu(gl);
-            if (mute== false) {
+            if (mute == false) {
 
-                menu.playsound("StartSound.mp3");
-                menu.mediaPlayer.setMute(false);
+//                menu.playsound("StartSound.mp3");
+//                menu.mediaPlayer.setMute(false);
 
-            }
-            else {
-                menu.mediaPlayer.setMute(true);
+            } else {
+//                menu.mediaPlayer.setMute(true);
             }
 
 
             break;
         case 1:
+            drawSprite(gl, 50, 50, 69, 100, 100);
+            zombieAnimationIndex++;
+            zombieAnimationIndex %= 17;
             p1AnimationIndex %= player1Move.length;
 
             player1.updateBullets();
-            drawSprite(gl , player1.getX() , player1.getY() ,p1AnimationIndex,10,10);
+            drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
             player1.drawBullets(gl);
 
-            for(int i=0 ; i< player1.health ;i++ ){
-                drawSprite(gl,2+i *5,95,68,3,3);
+            for (int i = 0; i < player1.health; i++) {
+                drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
 
             }
+            if (zombies.isEmpty()) {
+                int yz = (int) (Math.random() * 65) + 10;
+                int xz = (int) (Math.random() * 15) + 100;
+                Zombie zombie = new Zombie(xz, yz);
+                zombies.add(0, zombie);
+            }
+            Zombie zombie= zombies.get(0);
+            if (zombie.getX() > 20) {
+                zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
+                zombie.move(1);
+            } else {
+                zombies.remove(0);
+
+            }
+
+
+
             break;
 
     }

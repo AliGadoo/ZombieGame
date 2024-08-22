@@ -2,21 +2,21 @@ package Game.Gui;
 
 import javax.media.opengl.GL;
 import java.net.URL;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+//import javafx.embed.swing.JFXPanel;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
 import static Game.AnimEventListener.textureNames;
 import static Game.AnimEventListener.MAX_HEIGHT;
 import static Game.AnimEventListener.MAX_WIDTH;
 
-import javafx.util.Duration;
+//import javafx.util.Duration;
 
 //import sun.audio.AudioPlayer;
 //import sun.audio.AudioStream;
 import Game.AnimEventListener;
 
 public class Menu {
-    public MediaPlayer mediaPlayer;
+//    public MediaPlayer mediaPlayer;
     boolean isSoundPlaying;
     public int mute = 6;
 
@@ -68,7 +68,7 @@ int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
                 return;
             }
 
-            JFXPanel j = new JFXPanel(); // Initialize JavaFX
+//            JFXPanel j = new JFXPanel(); // Initialize JavaFX
 //            System.out.println(stopCurrent);
 //            System.out.println(mediaPlayer);
 //            System.out.println(isSoundPlaying);
@@ -76,18 +76,18 @@ int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
 //                mediaPlayer.stop();
 //            }
 
-            if (mediaPlayer == null || stopCurrent || !isSoundPlaying) {
-                Media soundTrack = new Media(soundURL.toURI().toString());
-                mediaPlayer = new MediaPlayer(soundTrack);
-                mediaPlayer.play();
-                isSoundPlaying = true;
-//
-                mediaPlayer.setOnEndOfMedia(() -> {
-                    isSoundPlaying = false;
-                    mediaPlayer.stop();
-//                    System.out.println("Stopped");
-                });
-            }
+//            if (mediaPlayer == null || stopCurrent || !isSoundPlaying) {
+//                Media soundTrack = new Media(soundURL.toURI().toString());
+//                mediaPlayer = new MediaPlayer(soundTrack);
+//                mediaPlayer.play();
+//                isSoundPlaying = true;
+////
+//                mediaPlayer.setOnEndOfMedia(() -> {
+//                    isSoundPlaying = false;
+//                    mediaPlayer.stop();
+////                    System.out.println("Stopped");
+//                });
+//            }
 
 //            if (mediaPlayer.getTotalDuration() != null && mediaPlayer.currentTimeProperty().get() != null) {
 //                System.out.println("Remaining Duration: " +
