@@ -16,7 +16,7 @@ import static Game.AnimEventListener.MAX_WIDTH;
 import Game.AnimEventListener;
 
 public class Menu {
-//    public MediaPlayer mediaPlayer;
+//   public MediaPlayer mediaPlayer;
     boolean isSoundPlaying;
     public int mute = 6;
 
