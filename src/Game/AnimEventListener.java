@@ -23,10 +23,18 @@ public class AnimEventListener extends AnimationListener{
     public static final double start_of_x = 25 ;
     public static final double End_of_Y = MAX_HEIGHT - 29;
     public static final double start_of_y = 12 ;
-    Player player1;
-    int player1X = 30 , player1Y = 50;
+
+
+    int player1X = 30 , player1Y = 34;
+    Player player1 = new Player(player1X,player1Y);
+    int player2X = 30 , player2Y = 68;
+    Player player2 = new Player(player2X,player2Y);
+    int p1AnimationIndex=0;
+    int p2AnimationIndex = 20;
+    boolean isMultiPlayer = true;
+
     double xPosition = 0, yPosition = 0;
-    int whatdraw = 1;
+    int whatdraw = 0;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -60,7 +68,7 @@ public class AnimEventListener extends AnimationListener{
     boolean mute = false;
     ArrayList<Zombie> zombies =new ArrayList<>();
     int zombieAnimationIndex=0;
-    int p1AnimationIndex=0;
+
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
     public static int[] textures = new int[textureNames.length];
 
@@ -153,7 +161,7 @@ public class AnimEventListener extends AnimationListener{
                 e.printStackTrace();
             }
         }
-        player1 = new Player(player1X,player1Y);
+
 
     }
 
@@ -188,6 +196,7 @@ public class AnimEventListener extends AnimationListener{
             drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
             player1.drawBullets(gl);
 
+
             for (int i = 0; i < player1.health; i++) {
                 drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
             }
@@ -211,6 +220,7 @@ public class AnimEventListener extends AnimationListener{
                 DrawDigits(gl , 2 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
             }
 
+
             drawSprite(gl , 13 , 90 , 40 , 3,4);
             drawSprite(gl , 14 , 90 , 40 , 3,4);
             drawSprite(gl , 15 , 90 , 40 , 3,4);
@@ -230,28 +240,70 @@ public class AnimEventListener extends AnimationListener{
 
             }
 
-            if (isColliding( player1.getX(), player1.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
-                player1.getDamaged();
-                zombies.remove(zombie);
-                if (player1.playerIsDead()) {
-                    System.out.println("Player is dead! Game over.");
-                }
-            }
+            zombieHitsPlayer(zombie , player1);
+            bulletHitsZombie(zombie, player1);
 
-            for (int i = 0; i < player1.getBullets().size(); i++) {
-                Bullet bullet = player1.getBullets().get(i);
-                if(isColliding(bullet.getX() , bullet.getY() , 2 , zombie.getX() , zombie.getY() , 3)){
-                    zombies.remove(zombie);
-                    player1.getBullets().remove(bullet);
-                    player1.setScore(player1.getScore() + 1);
+            if(isMultiPlayer){
+                player2.updateBullets();
+                drawSprite(gl, player2.getX(), player2.getY(), p2AnimationIndex, 10, 10);
+                player2.drawBullets(gl);
+                p2AnimationIndex %= player2Move.length;
+
+                for (int i = 0; i < player2.health; i++) {
+                    drawSprite(gl, MAX_WIDTH - 2 - i * 5, 95, 68, 3, 3);
                 }
 
-            }
+                // max bullets
+                DrawDigits(gl , 93 , 90 , player2.MAX_BULLETS, 2,3);
 
-            System.out.println(player1.getScore());
+                // slash sign
+                gl.glPushMatrix();
+                gl.glTranslated(91/ (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
+                gl.glRotated(-30, 0, 0, 1);
+                gl.glTranslated(-(91 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
+                drawSprite(gl, 91, 90, 80, 1, 4);
+                gl.glPopMatrix();
+
+                // player bullets
+                if(player2.MAX_BULLETS - player2.counterShots <=9 ){
+                    DrawDigits(gl , 88 , 90 , player2.MAX_BULLETS - player2.counterShots, 2,3);
+
+                }else {
+                    DrawDigits(gl , 87 , 90 , player2.MAX_BULLETS - player2.counterShots, 2,3);
+                }
+
+                drawSprite(gl , 99 , 90 , 40 , 3,4);
+                drawSprite(gl , 98 , 90 , 40 , 3,4);
+                drawSprite(gl , 97 , 90 , 40 , 3,4);
+
+                zombieHitsPlayer(zombie,player2);
+                bulletHitsZombie(zombie, player2);
+            }
             break;
 
     }
+    }
+
+    private void bulletHitsZombie(Zombie zombie, Player player) {
+        for (int i = 0; i < player.getBullets().size(); i++) {
+            Bullet bullet = player.getBullets().get(i);
+            if(isColliding(bullet.getX() , bullet.getY() , 2 , zombie.getX() , zombie.getY() , 3)){
+                zombies.remove(zombie);
+                player.getBullets().remove(bullet);
+                player.setScore(player.getScore() + 1);
+            }
+
+        }
+    }
+
+    private void zombieHitsPlayer (Zombie zombie, Player player) {
+        if (isColliding( player.getX(), player.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
+            player.getDamaged();
+            zombies.remove(zombie);
+            if (player.playerIsDead()) {
+                System.out.println("Player is dead! Game over.");
+            }
+        }
     }
 
     @Override
@@ -264,35 +316,68 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void handleKeyPress() {
-        if (isKeyPressed(KeyEvent.VK_LEFT)) {
+        if (isKeyPressed(KeyEvent.VK_A)) {
                 if (player1.getX() > start_of_x) {
                     player1.setX(--player1X);
                     p1AnimationIndex++;
                 }
             }
-            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+            if (isKeyPressed(KeyEvent.VK_D)) {
                 if (player1.getX() < End_of_x ) {
                     player1.setX(++player1X);
                     p1AnimationIndex++;
                 }
             }
-        if (isKeyPressed(KeyEvent.VK_UP)) {
+        if (isKeyPressed(KeyEvent.VK_W)) {
             if (player1.getY() < End_of_Y ) {
                 player1.setY(++player1Y);
                 p1AnimationIndex++;
             }
         }
-        if (isKeyPressed(KeyEvent.VK_DOWN)) {
+        if (isKeyPressed(KeyEvent.VK_S)) {
             if (player1.getY() > start_of_y) {
                 player1.setY(--player1Y);
                 p1AnimationIndex++;
             }
         }
-        if (isKeyPressed(KeyEvent.VK_SHIFT)) {
+        if (isKeyPressed(KeyEvent.VK_Z)) {
             player1.shoot();
         }
-        if(isKeyPressed(KeyEvent.VK_R)){
+        if(isKeyPressed(KeyEvent.VK_X)){
             player1.reload();
+        }
+
+        if(player2 != null){
+            if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                if (player2.getX() > start_of_x) {
+                    player2.setX(--player2X);
+                    p2AnimationIndex++;
+                }
+            }
+            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                if (player2.getX() < End_of_x ) {
+                    player2.setX(++player2X);
+                    p2AnimationIndex++;
+                }
+            }
+            if (isKeyPressed(KeyEvent.VK_UP)) {
+                if (player2.getY() < End_of_Y ) {
+                    player2.setY(++player2Y);
+                    p2AnimationIndex++;
+                }
+            }
+            if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                if (player2.getY() > start_of_y) {
+                    player2.setY(--player2Y);
+                    p2AnimationIndex++;
+                }
+            }
+            if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                player2.shoot();
+            }
+            if(isKeyPressed(KeyEvent.VK_M)){
+                player2.reload();
+            }
         }
     }
 
