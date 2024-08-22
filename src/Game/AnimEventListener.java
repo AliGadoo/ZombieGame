@@ -232,18 +232,21 @@ public class AnimEventListener extends AnimationListener{
                 zombies.add(0, zombie);
             }
             Zombie zombie= zombies.get(0);
-            if (zombie.getX() > 20) {
-                zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
-                zombie.move(1);
-            } else {
-                zombies.remove(0);
-
+            zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
+            if (!player1.playerIsDead()) {
+                zombie.move(player1.getX(), player1.getY(), .5);
             }
-
-            zombieHitsPlayer(zombie , player1);
-            bulletHitsZombie(zombie, player1);
+            zombieHitsPlayer(gl,zombie , player1);
+            bulletHitsZombie(gl,zombie, player1);
 
             if(isMultiPlayer){
+                if (!player1.playerIsDead() &&!player2.playerIsDead()) {
+                    zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5 );
+                } else if (!player1.playerIsDead()) {
+                    zombie.move(player1.getX(), player1.getY(), 0.5 );
+                } else if (!player2.playerIsDead()) {
+                    zombie.move(player2.getX(), player2.getY(), .5 );
+                }
                 player2.updateBullets();
                 drawSprite(gl, player2.getX(), player2.getY(), p2AnimationIndex, 10, 10);
                 player2.drawBullets(gl);
@@ -276,8 +279,8 @@ public class AnimEventListener extends AnimationListener{
                 drawSprite(gl , 98 , 90 , 40 , 3,4);
                 drawSprite(gl , 97 , 90 , 40 , 3,4);
 
-                zombieHitsPlayer(zombie,player2);
-                bulletHitsZombie(zombie, player2);
+                zombieHitsPlayer(gl,zombie,player2);
+                bulletHitsZombie(gl,zombie, player2);
             }
             break;
         case 2 :
@@ -288,10 +291,12 @@ public class AnimEventListener extends AnimationListener{
     }
     }
 
-    private void bulletHitsZombie(Zombie zombie, Player player) {
+    private void bulletHitsZombie(GL gl,Zombie zombie, Player player) {
         for (int i = 0; i < player.getBullets().size(); i++) {
             Bullet bullet = player.getBullets().get(i);
             if(isColliding(bullet.getX() , bullet.getY() , 2 , zombie.getX() , zombie.getY() , 3)){
+                zombie.die();
+                zombie.zombieBlood(gl);
                 zombies.remove(zombie);
                 player.getBullets().remove(bullet);
                 player.setScore(player.getScore() + 1);
@@ -300,9 +305,11 @@ public class AnimEventListener extends AnimationListener{
         }
     }
 
-    private void zombieHitsPlayer (Zombie zombie, Player player) {
+    private void zombieHitsPlayer (GL gl,Zombie zombie, Player player) {
         if (isColliding( player.getX(), player.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
             player.getDamaged();
+            zombie.die();
+            zombie.zombieBlood(gl);
             zombies.remove(zombie);
             if (player.playerIsDead()) {
                 System.out.println("Player is dead! Game over.");
