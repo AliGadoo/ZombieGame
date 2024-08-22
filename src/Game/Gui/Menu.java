@@ -24,6 +24,7 @@ public class Menu {
 int x = MAX_WIDTH/2, y = MAX_WIDTH/2-10;
 int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
 
+
     public int getX() {
         return x;
     }
@@ -57,7 +58,11 @@ int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
 
 
     }
-
+     public void drawHowToPlay(GL gl ,int index){
+         AnimEventListener animEventListener = new AnimEventListener();
+         animEventListener.drawSprite(gl, MAX_WIDTH/2, MAX_HEIGHT/2, index,100 , 100);
+         animEventListener.drawSprite(gl ,MAX_WIDTH-10 , 5 ,67,12,6 );
+     }
 
     public void playsound(String s) {
         playsound(s, false);

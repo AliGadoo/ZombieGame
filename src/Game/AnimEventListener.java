@@ -55,10 +55,10 @@ public class AnimEventListener extends AnimationListener{
             ,"Menu//PLAYBUTTON.png","Menu//SETTINGS.png","Menu//HOW  PLAY.png","Menu//EXITBUTTON.png",
             "Menu//SINGLE PLAYER.png","Menu//MULITI PLAYERS .png",
             "Menu//soundOnWhite.png" ,"Menu//soundOffWhite.png",
-            "Menu//BACKBUTTON.png",
+            "Menu//BACKBUTTON.png", //67
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
-            "Menu//background.png"
+          "Menu//HOW TO PLAY.png", "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -280,7 +280,11 @@ public class AnimEventListener extends AnimationListener{
                 bulletHitsZombie(zombie, player2);
             }
             break;
+        case 2 :
+          menu.drawHowToPlay(gl,81);
 
+
+            break;
     }
     }
 
@@ -438,11 +442,20 @@ public class AnimEventListener extends AnimationListener{
                     menu.mute = 6;
                 }
             }
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 40 && yPosition <= 50) {
+                whatdraw = 2;
+            }
+
 
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 65 && yPosition <= 75) {
                 whatdraw = 1;
             }
         }
+      if(whatdraw == 2){
+          if(xPosition>= 84  && xPosition <= 96 && yPosition >= 2 && yPosition <= 8){
+              whatdraw =0;
+          }
+      }
     }
 
     @Override
