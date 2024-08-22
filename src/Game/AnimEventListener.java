@@ -253,31 +253,31 @@ public class AnimEventListener extends AnimationListener{
                 p2AnimationIndex %= player2Move.length;
 
                 for (int i = 0; i < player2.health; i++) {
-                    drawSprite(gl, MAX_WIDTH - 2 - i * 5, 95, 68, 3, 3);
+                    drawSprite(gl, 2 + i * 5, 15, 68, 3, 3);
                 }
 
                 // max bullets
-                DrawDigits(gl , 93 , 90 , player2.MAX_BULLETS, 2,3);
+                DrawDigits(gl , 9 , 10, player1.MAX_BULLETS, 2,3);
 
                 // slash sign
                 gl.glPushMatrix();
-                gl.glTranslated(91/ (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
+                gl.glTranslated(6.5/ (MAX_WIDTH / 2.0) - 1, 10 / (MAX_HEIGHT / 2.0) - 1, 0);
                 gl.glRotated(-30, 0, 0, 1);
-                gl.glTranslated(-(91 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
-                drawSprite(gl, 91, 90, 80, 1, 4);
+                gl.glTranslated(-(6.5 / (MAX_WIDTH / 2.0) - 1), -(10 / (MAX_HEIGHT / 2.0) - 1), 0);
+                drawSprite(gl, 6.5, 10, 80, 1, 4);
                 gl.glPopMatrix();
 
                 // player bullets
                 if(player2.MAX_BULLETS - player2.counterShots <=9 ){
-                    DrawDigits(gl , 88 , 90 , player2.MAX_BULLETS - player2.counterShots, 2,3);
+                    DrawDigits(gl , 3 , 10 , player2.MAX_BULLETS - player2.counterShots, 2,3);
 
                 }else {
-                    DrawDigits(gl , 87 , 90 , player2.MAX_BULLETS - player2.counterShots, 2,3);
+                    DrawDigits(gl , 2 , 10 , player2.MAX_BULLETS - player2.counterShots, 2,3);
                 }
 
-                drawSprite(gl , 99 , 90 , 40 , 3,4);
-                drawSprite(gl , 98 , 90 , 40 , 3,4);
-                drawSprite(gl , 97 , 90 , 40 , 3,4);
+                drawSprite(gl , 13 , 10 , 40 , 3,4);
+                drawSprite(gl , 14 , 10 , 40 , 3,4);
+                drawSprite(gl , 15 , 10 , 40 , 3,4);
 
                 zombieHitsPlayer(gl,zombie,player2);
                 bulletHitsZombie(gl,zombie, player2);
