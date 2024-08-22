@@ -13,8 +13,8 @@ public class Player {
 
     private double x, y;
     private ArrayList<Bullet> bullets;
-    private int MAX_BULLETS = 10;
-    private int counterShots = 0;
+    public int MAX_BULLETS = 15;
+    public int counterShots = 0;
     private long lastShotTime = 0;
     private int delayTime = 400;
     private int score = 0;

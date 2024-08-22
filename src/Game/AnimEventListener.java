@@ -49,6 +49,7 @@ public class AnimEventListener extends AnimationListener{
             "Menu//soundOnWhite.png" ,"Menu//soundOffWhite.png",
             "Menu//BACKBUTTON.png",
             "heart.png","Night.png" , // index 69
+            "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
             "Menu//background.png"
     };
 
@@ -107,6 +108,16 @@ public class AnimEventListener extends AnimationListener{
         gl.glPopMatrix();
 
         gl.glDisable(GL.GL_BLEND);
+    }
+
+    public void DrawDigits(GL gl ,double x, double y, int digit, float xScale, float yScale){
+        if(digit >=10){
+            int rightDigit = digit % 10;
+            drawSprite(gl, x+2 , y , 70 + rightDigit , xScale , yScale);
+            drawSprite(gl, x , y , 70 + digit/10 , xScale , yScale);
+        }else {
+            drawSprite(gl, x , y , 70 + digit , xScale , yScale);
+        }
     }
 
     public boolean isColliding(double x1 , double y1 , double radius1 , double x2 , double y2 , double radius2) {
@@ -179,8 +190,31 @@ public class AnimEventListener extends AnimationListener{
 
             for (int i = 0; i < player1.health; i++) {
                 drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
-
             }
+
+            // max bullets
+            DrawDigits(gl , 9 , 90 , player1.MAX_BULLETS, 2,3);
+
+            // slash sign
+            gl.glPushMatrix();
+            gl.glTranslated(6.5/ (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
+            gl.glRotated(-30, 0, 0, 1);
+            gl.glTranslated(-(6.5 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
+            drawSprite(gl, 6.5, 90, 80, 1, 4);
+            gl.glPopMatrix();
+
+            // player bullets
+            if(player1.MAX_BULLETS - player1.counterShots <=9 ){
+                DrawDigits(gl , 3 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
+
+            }else {
+                DrawDigits(gl , 2 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
+            }
+
+            drawSprite(gl , 13 , 90 , 40 , 3,4);
+            drawSprite(gl , 14 , 90 , 40 , 3,4);
+            drawSprite(gl , 15 , 90 , 40 , 3,4);
+
             if (zombies.isEmpty()) {
                 int yz = (int) (Math.random() * 65) + 10;
                 int xz = (int) (Math.random() * 15) + 100;
@@ -215,8 +249,6 @@ public class AnimEventListener extends AnimationListener{
             }
 
             System.out.println(player1.getScore());
-
-
             break;
 
     }
