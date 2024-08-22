@@ -52,7 +52,7 @@ public class AnimEventListener extends AnimationListener{
             ,"Zombie//Zmove5.png","Zombie//Zmove6.png","Zombie//Zmove7.png","Zombie//Zmove8.png","Zombie//Zmove9.png"
             ,"Zombie//Zmove10.png","Zombie//Zmove11.png","Zombie//Zmove12.png","Zombie//Zmove13.png","Zombie//Zmove14.png"
             ,"Zombie//Zmove15.png","Zombie//Zmove16.png"
-            ,"Menu//PLAYBUTTON.png","Menu//SETTINGS.png","Menu//HOW TO PLAY.png","Menu//EXITBUTTON.png",
+            ,"Menu//PLAYBUTTON.png","Menu//SETTINGS.png","Menu//HOW  PLAY.png","Menu//EXITBUTTON.png",
             "Menu//SINGLE PLAYER.png","Menu//MULITI PLAYERS .png",
             "Menu//soundOnWhite.png" ,"Menu//soundOffWhite.png",
             "Menu//BACKBUTTON.png",
