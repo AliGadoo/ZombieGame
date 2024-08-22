@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Gui.Menu;
+import Game.Players.Bullet;
 import Game.Players.Player;
 import Game.Zombies.Zombie;
 import Texture.TextureReader;
@@ -18,10 +19,12 @@ import java.util.BitSet;
 public class AnimEventListener extends AnimationListener{
 
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
-    public static final double End_of_screen = MAX_WIDTH - 4;
-    public static final double start_of_screen = 4 ;
+    public static final double End_of_x = MAX_WIDTH - 4;
+    public static final double start_of_x = 25 ;
+    public static final double End_of_Y = MAX_HEIGHT - 29;
+    public static final double start_of_y = 12 ;
     Player player1;
-    int player1X = 10 , player1Y = 50;
+    int player1X = 30 , player1Y = 50;
     double xPosition = 0, yPosition = 0;
     int whatdraw = 1;
     public static String[] textureNames = {
@@ -106,6 +109,13 @@ public class AnimEventListener extends AnimationListener{
         gl.glDisable(GL.GL_BLEND);
     }
 
+    public boolean isColliding(double x1 , double y1 , double radius1 , double x2 , double y2 , double radius2) {
+        double dx = x2-x1;
+        double dy = y2-y1;
+        double distanceSquare = Math.pow(dx , 2) + Math.pow(dy,2);
+        return distanceSquare <= Math.pow(radius1 + radius1 , 2);
+    }
+
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -186,6 +196,25 @@ public class AnimEventListener extends AnimationListener{
 
             }
 
+            if (isColliding( player1.getX(), player1.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
+                player1.getDamaged();
+                zombies.remove(zombie);
+                if (player1.playerIsDead()) {
+                    System.out.println("Player is dead! Game over.");
+                }
+            }
+
+            for (int i = 0; i < player1.getBullets().size(); i++) {
+                Bullet bullet = player1.getBullets().get(i);
+                if(isColliding(bullet.getX() , bullet.getY() , 2 , zombie.getX() , zombie.getY() , 3)){
+                    zombies.remove(zombie);
+                    player1.getBullets().remove(bullet);
+                    player1.setScore(player1.getScore() + 1);
+                }
+
+            }
+
+            System.out.println(player1.getScore());
 
 
             break;
@@ -204,25 +233,25 @@ public class AnimEventListener extends AnimationListener{
     }
     public void handleKeyPress() {
         if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                if (player1.getX() > start_of_screen) {
+                if (player1.getX() > start_of_x) {
                     player1.setX(--player1X);
                     p1AnimationIndex++;
                 }
             }
             if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                if (player1.getX() < End_of_screen ) {
+                if (player1.getX() < End_of_x ) {
                     player1.setX(++player1X);
                     p1AnimationIndex++;
                 }
             }
         if (isKeyPressed(KeyEvent.VK_UP)) {
-            if (player1.getY() < End_of_screen ) {
+            if (player1.getY() < End_of_Y ) {
                 player1.setY(++player1Y);
                 p1AnimationIndex++;
             }
         }
         if (isKeyPressed(KeyEvent.VK_DOWN)) {
-            if (player1.getY() > start_of_screen) {
+            if (player1.getY() > start_of_y) {
                 player1.setY(--player1Y);
                 p1AnimationIndex++;
             }

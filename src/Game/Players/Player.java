@@ -17,6 +17,7 @@ public class Player {
     private int counterShots = 0;
     private long lastShotTime = 0;
     private int delayTime = 400;
+    private int score = 0;
     public int health = 3;
 
     public Player(double x, double y) {
@@ -33,12 +34,24 @@ public class Player {
         return y;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public ArrayList<Bullet> getBullets () {
+        return bullets;
+    }
+
     public void  setX(double x) {
         this.x = x;
     }
 
     public void  setY(double y) {
         this.y = y;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public boolean playerIsDead () {
