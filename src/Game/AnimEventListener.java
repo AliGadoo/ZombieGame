@@ -36,7 +36,7 @@ public class AnimEventListener extends AnimationListener{
     Sound sound = new Sound();
     int p1AnimationIndex=0;
     int p2AnimationIndex = 20;
-    boolean isMultiPlayer = true;  /////***/////
+    boolean isMultiPlayer = false;  /////***/////
 
     double xPosition = 0, yPosition = 0;
     int whatdraw = 0;
@@ -302,9 +302,13 @@ public class AnimEventListener extends AnimationListener{
                     if (wave == 1) {
                         wave = 2;
                         isfinished = false;
+                        player1.MAX_BULLETS = 15;
+                        player2.MAX_BULLETS = 15;
                     } else if (wave == 2) {
                         wave = 3;
                         isfinished = false;
+                        player1.MAX_BULLETS = 20;
+                        player2.MAX_BULLETS = 20;
                     } else if (wave == 3) {
 
                     }
@@ -405,14 +409,16 @@ public class AnimEventListener extends AnimationListener{
     }
 
     private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
-        for (int i = 0; i < zombies.size(); i++) {
-            Zombie zombie= zombies.get(i);
-            if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
-                player.getDamaged();
-                blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
-                zombies.remove(zombie);
-                if (player.playerIsDead()) {
-                    System.out.println("Player is dead! Game over.");
+        if(!player.playerIsDead()) {
+            for (int i = 0; i < zombies.size(); i++) {
+                Zombie zombie = zombies.get(i);
+                if (isColliding(player.getX(), player.getY(), playerRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
+                    player.getDamaged();
+                    blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
+                    zombies.remove(zombie);
+                    if (player.playerIsDead()) {
+                        System.out.println("Player is dead! Game over.");
+                    }
                 }
             }
         }
