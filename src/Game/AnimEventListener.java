@@ -6,6 +6,7 @@ import Game.Players.Player;
 import Game.Zombies.Blood;
 import Game.Zombies.Zombie;
 import Texture.TextureReader;
+import com.sun.opengl.util.j2d.TextRenderer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
@@ -37,8 +38,10 @@ public class AnimEventListener extends AnimationListener{
     double xPosition = 0, yPosition = 0;
     int whatdraw = 0;
     int wave =1;
-    int zombienum=8;
-    boolean isfinishied= false;
+
+    boolean isfinished= false;
+    private int timer = 0;
+    private int timerHandler = 0;
     public static String[] textureNames = {
             "Player1//P1move0.png", "Player1//P1move1.png", "Player1//P1move2.png", "Player1//P1move3.png", "Player1//P1move4.png",
             "Player1//P1move5.png", "Player1//P1move6.png", "Player1//P1move7.png", "Player1//P1move8.png", "Player1//P1move9.png",
@@ -140,7 +143,13 @@ public class AnimEventListener extends AnimationListener{
         double distanceSquare = Math.pow(dx , 2) + Math.pow(dy,2);
         return distanceSquare <= Math.pow(radius1 + radius1 , 2);
     }
-
+    void handleTimer(){
+        timerHandler++;
+        if(timerHandler == 24){
+            timer++;
+            timerHandler = 0;
+        }
+    }
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -174,6 +183,7 @@ public class AnimEventListener extends AnimationListener{
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
+        TextRenderer textRenderer = null;
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         handleKeyPress();
@@ -194,6 +204,8 @@ public class AnimEventListener extends AnimationListener{
             break;
         case 1:
             drawSprite(gl, 50, 50, 69, 100, 100);
+            handleTimer();
+            Render(textRenderer,350,660,String.valueOf(timer),20);
             for (int i = 0; i < blood.size(); i++) {
                 Blood blood1 = blood.get(i);
                 if (!blood1.isEnd()) {
@@ -240,14 +252,36 @@ public class AnimEventListener extends AnimationListener{
             drawSprite(gl , 14 , 90 , 40 , 3,4);
             drawSprite(gl , 15 , 90 , 40 , 3,4);
 
-            if (wave == 1 && zombies.isEmpty() && !isfinishied) {
-                spawnZombies(8);
-            } else if (wave == 2 && zombies.isEmpty() && !isfinishied) {
-                spawnZombies(12);
-            }else if (wave == 3 && zombies.isEmpty() && !isfinishied){
-                spawnZombies(20);
+            if (zombies.isEmpty()) {
+                if (wave == 1 &&! isfinished) {
+                    if (isMultiPlayer){
+                        spawnZombies(20);
+                    }else spawnZombies(10);
+                    isfinished = true;
+                } else if (wave == 2 && ! isfinished) {
+                    if (isMultiPlayer){
+                     spawnZombies(35);
+                    }spawnZombies(18);
+                    isfinished = true;
+                } else if (wave == 3 ) {
+                    if (isMultiPlayer){
+                        spawnZombies(50);
+                    }spawnZombies(25);
+
+                }
             }
 
+            if (zombies.isEmpty() && isfinished) {
+                if (wave == 1) {
+                    wave = 2;
+                    isfinished = false;
+                } else if (wave == 2) {
+                    wave = 3;
+                    isfinished = false;
+                } else if (wave == 3) {
+
+                }
+            }
             for (int z= 0; z <zombies.size() ; z++) {
 
                 Zombie zombie = zombies.get(z);
@@ -306,14 +340,7 @@ public class AnimEventListener extends AnimationListener{
                     bulletHitsZombie( zombies, player2);
                 }
 
-            if (zombies.isEmpty() && !isfinishied) {
-                if (wave == 1) {
-                    wave = 2;
-                } else if (wave == 2) {
 
-                    isfinishied = true;
-                }
-            }
             break;
 
     }
@@ -356,7 +383,15 @@ public class AnimEventListener extends AnimationListener{
         }
 
     }
-
+    private void Render(TextRenderer textRenderer , int x , int y , String messege , int fontSize) {
+        textRenderer = new TextRenderer(new Font("Arial", 1, fontSize));
+        textRenderer.beginRendering(700, 700);
+        textRenderer.setColor(Color.white);
+        textRenderer.setSmoothing(true);
+        textRenderer.draw(messege, x , y);
+        textRenderer.setColor(Color.white);
+        textRenderer.endRendering();
+    }
     @Override
     public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
