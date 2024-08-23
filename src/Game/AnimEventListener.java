@@ -212,11 +212,11 @@ public class AnimEventListener extends AnimationListener{
                 if (mute == false) {
 
 //                System.out.println("unmute");
-                    menu.playsound("StartSound.mp3");
-                    menu.mediaPlayer.setMute(false);
-//
+//                    menu.playsound("StartSound.mp3");
+//                    menu.mediaPlayer.setMute(false);
+////
                 } else {
-                    menu.mediaPlayer.setMute(true);
+//                    menu.mediaPlayer.setMute(true);
 //
 
 
@@ -228,7 +228,7 @@ public class AnimEventListener extends AnimationListener{
                 break;
             case 1:
                 drawSprite(gl, 50, 50, 69, 100, 100);
-
+                Render(textRenderer,550,660,"Wave "+wave,40);
                 Render(textRenderer,350,660,String.valueOf(timer),20);
                 for (int i = 0; i < blood.size(); i++) {
                     Blood blood1 = blood.get(i);
@@ -389,17 +389,16 @@ public class AnimEventListener extends AnimationListener{
                 if(paused){
                     drawBox(gl,textRenderer," Paused");
                 }
-                if (!play){
-                    if(isMultiPlayer){
-                        if (player1.playerIsDead()&&player2.playerIsDead()){
-                            drawBox(gl,textRenderer," YOU LOSE");
-                            play=true;
-                        }
-                    } else if (player1.playerIsDead()) {
+                if(isMultiPlayer){
+                    if (player1.playerIsDead()&&player2.playerIsDead()){
                         drawBox(gl,textRenderer," YOU LOSE");
                         play=true;
                     }
+                } else if (player1.playerIsDead()) {
+                    drawBox(gl,textRenderer," YOU LOSE");
+                    play=true;
                 }
+
                 break;
             case 2:
                 if(whatdraw == 2){
