@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
+import Sound.Sound;
 
 public class AnimEventListener extends AnimationListener{
 
@@ -32,6 +33,7 @@ public class AnimEventListener extends AnimationListener{
     int playerRadius = 3;
     int player2X = 30 , player2Y = 68;
     Player player2 = new Player(player2X,player2Y);
+    Sound sound = new Sound();
     int p1AnimationIndex=0;
     int p2AnimationIndex = 20;
     boolean isMultiPlayer = true;
@@ -196,11 +198,17 @@ public class AnimEventListener extends AnimationListener{
             menu.drawMenu(gl);
             if (mute == false) {
 
-//                menu.playsound("StartSound.mp3");
-//                menu.mediaPlayer.setMute(false);
-
+//                System.out.println("unmute");
+                menu.playsound("StartSound.mp3");
+                menu.mediaPlayer.setMute(false);
+//
             } else {
-//                menu.mediaPlayer.setMute(true);
+                menu.mediaPlayer.setMute(true);
+//
+
+
+
+//                System.out.println("mute");
             }
 
 
@@ -556,11 +564,7 @@ public class AnimEventListener extends AnimationListener{
                whatdraw =2;
             }
             if (xPosition >= 92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5) {
-                if (mute == true) {
-                    mute = false;
-                } else {
-                    mute = true;
-                }
+                mute = !mute;
                 if (menu.mute == 6) {
                     menu.mute = 7;
                 } else {
