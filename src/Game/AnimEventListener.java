@@ -273,7 +273,6 @@ public class AnimEventListener extends AnimationListener{
                     player2.updateBullets();
                     drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
                     player2.drawBullets(gl);
-                    p2AnimationIndex %=39;
 
                     System.out.println(p2AnimationIndex);
                     for (int i = 0; i < player2.health; i++) {
@@ -403,25 +402,45 @@ public class AnimEventListener extends AnimationListener{
             if (isKeyPressed(KeyEvent.VK_LEFT)) {
                 if (player2.getX() > start_of_x) {
                     player2.setX(--player2X);
-                    p2AnimationIndex++;
+                    if (p2AnimationIndex < 39) {
+                        p2AnimationIndex++;
+                    } else {
+                        p2AnimationIndex = 20;
+                    }
+
                 }
             }
             if (isKeyPressed(KeyEvent.VK_RIGHT)) {
                 if (player2.getX() < End_of_x ) {
                     player2.setX(++player2X);
-                    p2AnimationIndex++;
+                    if (p2AnimationIndex < 39) {
+                        p2AnimationIndex++;
+                    } else {
+                        p2AnimationIndex = 20;
+                    }
+
                 }
             }
             if (isKeyPressed(KeyEvent.VK_UP)) {
                 if (player2.getY() < End_of_Y ) {
                     player2.setY(++player2Y);
-                    p2AnimationIndex++;
+                    if (p2AnimationIndex < 39) {
+                        p2AnimationIndex++;
+                    } else {
+                        p2AnimationIndex = 20;
+                    }
+
                 }
             }
             if (isKeyPressed(KeyEvent.VK_DOWN)) {
                 if (player2.getY() > start_of_y) {
                     player2.setY(--player2Y);
-                    p2AnimationIndex++;
+                    if (p2AnimationIndex < 39) {
+                        p2AnimationIndex++;
+                    } else {
+                        p2AnimationIndex = 20;
+                    }
+
                 }
             }
             if (isKeyPressed(KeyEvent.VK_SPACE)) {
