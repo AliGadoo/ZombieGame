@@ -207,7 +207,7 @@ public class AnimEventListener extends AnimationListener{
             break;
         case 1:
             drawSprite(gl, 50, 50, 69, 100, 100);
-            handleTimer();
+
             Render(textRenderer,350,660,String.valueOf(timer),20);
             for (int i = 0; i < blood.size(); i++) {
                 Blood blood1 = blood.get(i);
@@ -218,7 +218,10 @@ public class AnimEventListener extends AnimationListener{
                     --i;
                 }
             }
-            zombieAnimationIndex++;
+            if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
+                handleTimer();
+                zombieAnimationIndex++;
+            }
             zombieAnimationIndex %= 17;
             p1AnimationIndex %= player1Move.length;
 
@@ -264,13 +267,13 @@ public class AnimEventListener extends AnimationListener{
                     isfinished = true;
                 } else if (wave == 2 && ! isfinished) {
                     if (isMultiPlayer){
-                     spawnZombies(35);
-                    }spawnZombies(18);
+                     spawnZombies(30);
+                    }else spawnZombies(18);
                     isfinished = true;
                 } else if (wave == 3 ) {
                     if (isMultiPlayer){
-                        spawnZombies(50);
-                    }spawnZombies(25);
+                        spawnZombies(40);
+                    }else spawnZombies(25);
 
                 }
             }
