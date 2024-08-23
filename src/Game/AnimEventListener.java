@@ -36,7 +36,7 @@ public class AnimEventListener extends AnimationListener{
     Sound sound = new Sound();
     int p1AnimationIndex=0;
     int p2AnimationIndex = 20;
-    boolean isMultiPlayer = true;
+    boolean isMultiPlayer = true;  /////***/////
 
     double xPosition = 0, yPosition = 0;
     int whatdraw = 0;
@@ -68,7 +68,8 @@ public class AnimEventListener extends AnimationListener{
             "Menu//BACKBUTTON.png",//67
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
-          "Menu//HOW TO PLAY.png" ,  "Menu//background.png" //81
+            "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png" //82 alphabet
+            ,  "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -155,6 +156,15 @@ public class AnimEventListener extends AnimationListener{
             timerHandler = 0;
         }
     }
+
+    public void DrawScore(GL gl,int x,int y){
+
+        int [] array = {82,83,84,85,86};
+        for(int i= 0 ; i < 5 ;i++){
+            drawSprite(gl,x+i*2,y,array[i], 2 ,2);
+        }
+    }
+
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
         GL gl = glAutoDrawable.getGL();
@@ -193,127 +203,129 @@ public class AnimEventListener extends AnimationListener{
         gl.glLoadIdentity();
         handleKeyPress();
 
-    switch (whatdraw) {
-        case 0:
-            menu.drawMenu(gl);
-            if (mute == false) {
+        switch (whatdraw) {
+            case 0:
+                menu.drawMenu(gl);
+                if (mute == false) {
 
 //                System.out.println("unmute");
-                menu.playsound("StartSound.mp3");
-                menu.mediaPlayer.setMute(false);
+                    menu.playsound("StartSound.mp3");
+                    menu.mediaPlayer.setMute(false);
 //
-            } else {
-                menu.mediaPlayer.setMute(true);
+                } else {
+                    menu.mediaPlayer.setMute(true);
 //
 
 
 
 //                System.out.println("mute");
-            }
-
-
-            break;
-        case 1:
-            drawSprite(gl, 50, 50, 69, 100, 100);
-
-            Render(textRenderer,350,660,String.valueOf(timer),20);
-            for (int i = 0; i < blood.size(); i++) {
-                Blood blood1 = blood.get(i);
-                if (!blood1.isEnd()) {
-                    drawSprite(gl, blood1.getX(), blood1.getY(), 41, 10, 10);
-                } else {
-                    blood.remove(i);
-                    --i;
                 }
-            }
-            if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
-                handleTimer();
-                zombieAnimationIndex++;
-            }
-            zombieAnimationIndex %= 17;
-            p1AnimationIndex %= player1Move.length;
-
-            player1.updateBullets();
-            if(!player1.playerIsDead()){
-                drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
-                player1.drawBullets(gl);
-            }
-
-            for (int i = 0; i < player1.health; i++) {
-                drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
-            }
-
-            // max bullets
-            DrawDigits(gl , 9 , 90 , player1.MAX_BULLETS, 2,3);
-
-            // slash sign
-            gl.glPushMatrix();
-            gl.glTranslated(6.5/ (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
-            gl.glRotated(-30, 0, 0, 1);
-            gl.glTranslated(-(6.5 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
-            drawSprite(gl, 6.5, 90, 80, 1, 4);
-            gl.glPopMatrix();
-
-            // player bullets
-            if(player1.MAX_BULLETS - player1.counterShots <=9 ){
-                DrawDigits(gl , 3 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
-
-            }else {
-                DrawDigits(gl , 2 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
-            }
 
 
-            drawSprite(gl , 13 , 90 , 40 , 3,4);
-            drawSprite(gl , 14 , 90 , 40 , 3,4);
-            drawSprite(gl , 15 , 90 , 40 , 3,4);
+                break;
+            case 1:
+                drawSprite(gl, 50, 50, 69, 100, 100);
 
-            if (zombies.isEmpty()) {
-                if (wave == 1 &&! isfinished) {
-                    if (isMultiPlayer){
-                        spawnZombies(20);
-                    }else spawnZombies(10);
-                    isfinished = true;
-                } else if (wave == 2 && ! isfinished) {
-                    if (isMultiPlayer){
-                     spawnZombies(30);
-                    }else spawnZombies(18);
-                    isfinished = true;
-                } else if (wave == 3 ) {
-                    if (isMultiPlayer){
-                        spawnZombies(40);
-                    }else spawnZombies(25);
-
-                }
-            }
-
-            if (zombies.isEmpty() && isfinished) {
-                if (wave == 1) {
-                    wave = 2;
-                    isfinished = false;
-                } else if (wave == 2) {
-                    wave = 3;
-                    isfinished = false;
-                } else if (wave == 3) {
-
-                }
-            }
-            for (int z= 0; z <zombies.size() ; z++) {
-
-                Zombie zombie = zombies.get(z);
-                zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
-                if (!player1.playerIsDead()) {
-                    zombie.move(player1.getX(), player1.getY(), .5);
-                }
-                if (isMultiPlayer) {
-                    if (!player1.playerIsDead() && !player2.playerIsDead()) {
-                        zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
-                    } else if (!player1.playerIsDead()) {
-                        zombie.move(player1.getX(), player1.getY(), 0.5);
-                    } else if (!player2.playerIsDead()) {
-                        zombie.move(player2.getX(), player2.getY(), .5);
+                Render(textRenderer,350,660,String.valueOf(timer),20);
+                for (int i = 0; i < blood.size(); i++) {
+                    Blood blood1 = blood.get(i);
+                    if (!blood1.isEnd()) {
+                        drawSprite(gl, blood1.getX(), blood1.getY(), 41, 10, 10);
+                    } else {
+                        blood.remove(i);
+                        --i;
                     }
                 }
-            }
+                if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
+                    handleTimer();
+                    zombieAnimationIndex++;
+                }
+                zombieAnimationIndex %= 17;
+                p1AnimationIndex %= player1Move.length;
+
+                player1.updateBullets();
+                if(!player1.playerIsDead()){
+                    drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
+                    player1.drawBullets(gl);
+                }
+
+                for (int i = 0; i < player1.health; i++) {
+                    drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
+                }
+
+                // max bullets
+                DrawDigits(gl , 9 , 90 , player1.MAX_BULLETS, 2,3);
+
+                // slash sign
+                gl.glPushMatrix();
+                gl.glTranslated(6.5/ (MAX_WIDTH / 2.0) - 1, 90 / (MAX_HEIGHT / 2.0) - 1, 0);
+                gl.glRotated(-30, 0, 0, 1);
+                gl.glTranslated(-(6.5 / (MAX_WIDTH / 2.0) - 1), -(90 / (MAX_HEIGHT / 2.0) - 1), 0);
+                drawSprite(gl, 6.5, 90, 80, 1, 4);
+                gl.glPopMatrix();
+
+                // player bullets
+                if(player1.MAX_BULLETS - player1.counterShots <=9 ){
+                    DrawDigits(gl , 3 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
+
+                }else {
+                    DrawDigits(gl , 2 , 90 , player1.MAX_BULLETS - player1.counterShots, 2,3);
+                }
+
+
+                drawSprite(gl , 13 , 90 , 40 , 3,4);
+                drawSprite(gl , 14 , 90 , 40 , 3,4);
+                drawSprite(gl , 15 , 90 , 40 , 3,4);
+
+                DrawScore(gl,2,84);  //drawScore1
+                DrawDigits(gl, 13, 84 , player1.getScore() , 2,2);
+                if (zombies.isEmpty()) {
+                    if (wave == 1 &&! isfinished) {
+                        if (isMultiPlayer){
+                            spawnZombies(20);
+                        }else spawnZombies(10);
+                        isfinished = true;
+                    } else if (wave == 2 && ! isfinished) {
+                        if (isMultiPlayer){
+                            spawnZombies(30);
+                        }else spawnZombies(18);
+                        isfinished = true;
+                    } else if (wave == 3 ) {
+                        if (isMultiPlayer){
+                            spawnZombies(40);
+                        }else spawnZombies(25);
+
+                    }
+                }
+
+                if (zombies.isEmpty() && isfinished) {
+                    if (wave == 1) {
+                        wave = 2;
+                        isfinished = false;
+                    } else if (wave == 2) {
+                        wave = 3;
+                        isfinished = false;
+                    } else if (wave == 3) {
+
+                    }
+                }
+                for (int z= 0; z <zombies.size() ; z++) {
+
+                    Zombie zombie = zombies.get(z);
+                    zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
+                    if (!player1.playerIsDead()) {
+                        zombie.move(player1.getX(), player1.getY(), .5);
+                    }
+                    if (isMultiPlayer) {
+                        if (!player1.playerIsDead() && !player2.playerIsDead()) {
+                            zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
+                        } else if (!player1.playerIsDead()) {
+                            zombie.move(player1.getX(), player1.getY(), 0.5);
+                        } else if (!player2.playerIsDead()) {
+                            zombie.move(player2.getX(), player2.getY(), .5);
+                        }
+                    }
+                }
                 zombieHitsPlayer( zombies, player1);
                 bulletHitsZombie( zombies, player1);
 
@@ -352,19 +364,21 @@ public class AnimEventListener extends AnimationListener{
                     drawSprite(gl , 14 , 10 , 40 , 3,4);
                     drawSprite(gl , 15 , 10 , 40 , 3,4);
 
+                    DrawScore(gl,2,4); //drawScore2
+                    DrawDigits(gl, 13, 4 , player2.getScore() , 2,2);
                     zombieHitsPlayer( zombies, player2);
                     bulletHitsZombie( zombies, player2);
                 }
 
 
-            break;
-        case 2:
-            if(whatdraw == 2){
-            menu.drawHowToPlay(gl,81);}
+                break;
+            case 2:
+                if(whatdraw == 2){
+                    menu.drawHowToPlay(gl,81);}
 
-            break;
+                break;
 
-    }
+        }
     }
     private void spawnZombies(int n) {
         for (int i = 0; i < n; i++) {
@@ -391,16 +405,14 @@ public class AnimEventListener extends AnimationListener{
     }
 
     private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
-        if(!player.playerIsDead()){
-            for (int i = 0; i < zombies.size(); i++) {
-                Zombie zombie= zombies.get(i);
-                if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
-                    player.getDamaged();
-                    blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
-                    zombies.remove(zombie);
-                    if (player.playerIsDead()) {
-                        System.out.println("Player is dead! Game over.");
-                    }
+        for (int i = 0; i < zombies.size(); i++) {
+            Zombie zombie= zombies.get(i);
+            if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
+                player.getDamaged();
+                blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
+                zombies.remove(zombie);
+                if (player.playerIsDead()) {
+                    System.out.println("Player is dead! Game over.");
                 }
             }
         }
@@ -458,60 +470,60 @@ public class AnimEventListener extends AnimationListener{
             }
         }
 
-       if(!player2.playerIsDead()){
-           if(player2 != null){
-               if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                   if (player2.getX() > start_of_x) {
-                       player2.setX(--player2X);
-                       if (p2AnimationIndex < 39) {
-                           p2AnimationIndex++;
-                       } else {
-                           p2AnimationIndex = 20;
-                       }
+        if(!player2.playerIsDead()){
+            if(player2 != null){
+                if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                    if (player2.getX() > start_of_x) {
+                        player2.setX(--player2X);
+                        if (p2AnimationIndex < 39) {
+                            p2AnimationIndex++;
+                        } else {
+                            p2AnimationIndex = 20;
+                        }
 
-                   }
-               }
-               if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                   if (player2.getX() < End_of_x ) {
-                       player2.setX(++player2X);
-                       if (p2AnimationIndex < 39) {
-                           p2AnimationIndex++;
-                       } else {
-                           p2AnimationIndex = 20;
-                       }
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                    if (player2.getX() < End_of_x ) {
+                        player2.setX(++player2X);
+                        if (p2AnimationIndex < 39) {
+                            p2AnimationIndex++;
+                        } else {
+                            p2AnimationIndex = 20;
+                        }
 
-                   }
-               }
-               if (isKeyPressed(KeyEvent.VK_UP)) {
-                   if (player2.getY() < End_of_Y ) {
-                       player2.setY(++player2Y);
-                       if (p2AnimationIndex < 39) {
-                           p2AnimationIndex++;
-                       } else {
-                           p2AnimationIndex = 20;
-                       }
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_UP)) {
+                    if (player2.getY() < End_of_Y ) {
+                        player2.setY(++player2Y);
+                        if (p2AnimationIndex < 39) {
+                            p2AnimationIndex++;
+                        } else {
+                            p2AnimationIndex = 20;
+                        }
 
-                   }
-               }
-               if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                   if (player2.getY() > start_of_y) {
-                       player2.setY(--player2Y);
-                       if (p2AnimationIndex < 39) {
-                           p2AnimationIndex++;
-                       } else {
-                           p2AnimationIndex = 20;
-                       }
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                    if (player2.getY() > start_of_y) {
+                        player2.setY(--player2Y);
+                        if (p2AnimationIndex < 39) {
+                            p2AnimationIndex++;
+                        } else {
+                            p2AnimationIndex = 20;
+                        }
 
-                   }
-               }
-               if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                   player2.shoot();
-               }
-               if(isKeyPressed(KeyEvent.VK_M)){
-                   player2.reload();
-               }
-           }
-       }
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                    player2.shoot();
+                }
+                if(isKeyPressed(KeyEvent.VK_M)){
+                    player2.reload();
+                }
+            }
+        }
     }
 
     public BitSet keyBits = new BitSet(256);
@@ -563,7 +575,7 @@ public class AnimEventListener extends AnimationListener{
             //***///
 
             if(xPosition>= 40 && xPosition <= 60 && yPosition >= 40 && yPosition <= 50){
-               whatdraw =2;
+                whatdraw =2;
             }
             if (xPosition >= 92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5) {
                 mute = !mute;
@@ -583,9 +595,9 @@ public class AnimEventListener extends AnimationListener{
 
         ////***///
         if(whatdraw==2){
-        if(xPosition >=86&& xPosition <= 94 && yPosition >= 4 && yPosition <=7   ){
-            whatdraw=0;
-        }
+            if(xPosition >=86&& xPosition <= 94 && yPosition >= 4 && yPosition <=7   ){
+                whatdraw=0;
+            }
         }
 
     }
