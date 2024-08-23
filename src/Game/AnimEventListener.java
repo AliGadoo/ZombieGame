@@ -29,6 +29,7 @@ public class AnimEventListener extends AnimationListener{
 
     int player1X = 30 , player1Y = 34;
     Player player1 = new Player(player1X,player1Y);
+    int playerRadius = 3;
     int player2X = 30 , player2Y = 68;
     Player player2 = new Player(player2X,player2Y);
     int p1AnimationIndex=0;
@@ -76,6 +77,8 @@ public class AnimEventListener extends AnimationListener{
     ArrayList<Zombie> zombies =new ArrayList<>();
     ArrayList<Blood> blood = new ArrayList<>();
     int zombieAnimationIndex=0;
+    int zombieRadius = 3;
+    int bulletRadius = 2;
 
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -220,9 +223,10 @@ public class AnimEventListener extends AnimationListener{
             p1AnimationIndex %= player1Move.length;
 
             player1.updateBullets();
-            drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
-            player1.drawBullets(gl);
-
+            if(!player1.playerIsDead()){
+                drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
+                player1.drawBullets(gl);
+            }
 
             for (int i = 0; i < player1.health; i++) {
                 drawSprite(gl, 2 + i * 5, 95, 68, 3, 3);
@@ -304,11 +308,12 @@ public class AnimEventListener extends AnimationListener{
 
                 if (isMultiPlayer) {
 
+                    if(!player1.playerIsDead()){
+                        drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
+                        player2.drawBullets(gl);
+                    }
                     player2.updateBullets();
-                    drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
-                    player2.drawBullets(gl);
 
-                    System.out.println(p2AnimationIndex);
                     for (int i = 0; i < player2.health; i++) {
                         drawSprite(gl, 2 + i * 5, 15, 68, 3, 3);
                     }
@@ -358,7 +363,7 @@ public class AnimEventListener extends AnimationListener{
             Bullet bullet = player.getBullets().get(i);
             for (int j = 0; j < zombies.size(); j++) {
                 Zombie zombie = zombies.get(j);
-                if (isColliding(bullet.getX(), bullet.getY(), 2, zombie.getX(), zombie.getY(), 3)) {
+                if (isColliding(bullet.getX(), bullet.getY(), bulletRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
                     blood.add(new Blood(zombie.getX(), zombie.getY(), 1000));
                     zombies.remove(zombie);
                     player.getBullets().remove(bullet);
@@ -372,7 +377,7 @@ public class AnimEventListener extends AnimationListener{
     private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
         for (int i = 0; i < zombies.size(); i++) {
             Zombie zombie= zombies.get(i);
-            if (isColliding( player.getX(), player.getY(), 3,zombie.getX(), zombie.getY(), 3)) {
+            if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
                 player.getDamaged();
                 blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
                 zombies.remove(zombie);
@@ -402,7 +407,8 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void handleKeyPress() {
-        if (isKeyPressed(KeyEvent.VK_A)) {
+        if(!player1.playerIsDead()){
+            if (isKeyPressed(KeyEvent.VK_A)) {
                 if (player1.getX() > start_of_x) {
                     player1.setX(--player1X);
                     p1AnimationIndex++;
@@ -414,77 +420,80 @@ public class AnimEventListener extends AnimationListener{
                     p1AnimationIndex++;
                 }
             }
-        if (isKeyPressed(KeyEvent.VK_W)) {
-            if (player1.getY() < End_of_Y ) {
-                player1.setY(++player1Y);
-                p1AnimationIndex++;
-            }
-        }
-        if (isKeyPressed(KeyEvent.VK_S)) {
-            if (player1.getY() > start_of_y) {
-                player1.setY(--player1Y);
-                p1AnimationIndex++;
-            }
-        }
-        if (isKeyPressed(KeyEvent.VK_Z)) {
-            player1.shoot();
-        }
-        if(isKeyPressed(KeyEvent.VK_X)){
-            player1.reload();
-        }
-
-        if(player2 != null){
-            if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                if (player2.getX() > start_of_x) {
-                    player2.setX(--player2X);
-                    if (p2AnimationIndex < 39) {
-                        p2AnimationIndex++;
-                    } else {
-                        p2AnimationIndex = 20;
-                    }
-
+            if (isKeyPressed(KeyEvent.VK_W)) {
+                if (player1.getY() < End_of_Y ) {
+                    player1.setY(++player1Y);
+                    p1AnimationIndex++;
                 }
             }
-            if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                if (player2.getX() < End_of_x ) {
-                    player2.setX(++player2X);
-                    if (p2AnimationIndex < 39) {
-                        p2AnimationIndex++;
-                    } else {
-                        p2AnimationIndex = 20;
-                    }
-
+            if (isKeyPressed(KeyEvent.VK_S)) {
+                if (player1.getY() > start_of_y) {
+                    player1.setY(--player1Y);
+                    p1AnimationIndex++;
                 }
             }
-            if (isKeyPressed(KeyEvent.VK_UP)) {
-                if (player2.getY() < End_of_Y ) {
-                    player2.setY(++player2Y);
-                    if (p2AnimationIndex < 39) {
-                        p2AnimationIndex++;
-                    } else {
-                        p2AnimationIndex = 20;
-                    }
-
-                }
+            if (isKeyPressed(KeyEvent.VK_Z)) {
+                player1.shoot();
             }
-            if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                if (player2.getY() > start_of_y) {
-                    player2.setY(--player2Y);
-                    if (p2AnimationIndex < 39) {
-                        p2AnimationIndex++;
-                    } else {
-                        p2AnimationIndex = 20;
-                    }
-
-                }
-            }
-            if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                player2.shoot();
-            }
-            if(isKeyPressed(KeyEvent.VK_M)){
-                player2.reload();
+            if(isKeyPressed(KeyEvent.VK_X)){
+                player1.reload();
             }
         }
+
+       if(!player2.playerIsDead()){
+           if(player2 != null){
+               if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                   if (player2.getX() > start_of_x) {
+                       player2.setX(--player2X);
+                       if (p2AnimationIndex < 39) {
+                           p2AnimationIndex++;
+                       } else {
+                           p2AnimationIndex = 20;
+                       }
+
+                   }
+               }
+               if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                   if (player2.getX() < End_of_x ) {
+                       player2.setX(++player2X);
+                       if (p2AnimationIndex < 39) {
+                           p2AnimationIndex++;
+                       } else {
+                           p2AnimationIndex = 20;
+                       }
+
+                   }
+               }
+               if (isKeyPressed(KeyEvent.VK_UP)) {
+                   if (player2.getY() < End_of_Y ) {
+                       player2.setY(++player2Y);
+                       if (p2AnimationIndex < 39) {
+                           p2AnimationIndex++;
+                       } else {
+                           p2AnimationIndex = 20;
+                       }
+
+                   }
+               }
+               if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                   if (player2.getY() > start_of_y) {
+                       player2.setY(--player2Y);
+                       if (p2AnimationIndex < 39) {
+                           p2AnimationIndex++;
+                       } else {
+                           p2AnimationIndex = 20;
+                       }
+
+                   }
+               }
+               if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                   player2.shoot();
+               }
+               if(isKeyPressed(KeyEvent.VK_M)){
+                   player2.reload();
+               }
+           }
+       }
     }
 
     public BitSet keyBits = new BitSet(256);
