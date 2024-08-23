@@ -211,17 +211,13 @@ public class AnimEventListener extends AnimationListener{
                 menu.drawMenu(gl);
                 if (mute == false) {
 
-//                System.out.println("unmute");
-//                    menu.playsound("StartSound.mp3");
-//                    menu.mediaPlayer.setMute(false);
+                System.out.println("unmute");
+                    menu.playsound("StartSound.mp3");
+                    menu.mediaPlayer.setMute(false);
 ////
                 } else {
-//                    menu.mediaPlayer.setMute(true);
-//
-
-
-
-//                System.out.println("mute");
+                    menu.mediaPlayer.setMute(true);
+                System.out.println("mute");
                 }
 
 
@@ -283,13 +279,13 @@ public class AnimEventListener extends AnimationListener{
 
                 DrawScore(gl,2,84);  //drawScore1
                 DrawDigits(gl, 13, 84 , player1.getScore() , 2,2);
-                if (zombies.isEmpty()) {
-                    if (wave == 1 &&! isfinished) {
+                if (zombies.isEmpty()&& ! isfinished) {
+                    if (wave == 1 ) {
                         if (isMultiPlayer){
                             spawnZombies(20);
                         }else spawnZombies(10);
                         isfinished = true;
-                    } else if (wave == 2 && ! isfinished) {
+                    } else if (wave == 2 ) {
                         if (isMultiPlayer){
                             spawnZombies(30);
                         }else spawnZombies(18);
@@ -422,7 +418,7 @@ public class AnimEventListener extends AnimationListener{
             for (int j = 0; j < zombies.size(); j++) {
                 Zombie zombie = zombies.get(j);
                 if (isColliding(bullet.getX(), bullet.getY(), bulletRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
-                    blood.add(new Blood(zombie.getX(), zombie.getY(), 1000));
+                    blood.add(new Blood(zombie.getX(), zombie.getY(), 5000));
                     zombies.remove(zombie);
                     player.getBullets().remove(bullet);
                     player.setScore(player.getScore() + 1);
@@ -438,7 +434,7 @@ public class AnimEventListener extends AnimationListener{
                 Zombie zombie = zombies.get(i);
                 if (isColliding(player.getX(), player.getY(), playerRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
                     player.getDamaged();
-                    blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
+                    blood.add(new Blood(zombie.getX(), zombie.getY(), 5000));
                     zombies.remove(zombie);
                     if (player.playerIsDead()) {
                         System.out.println("Player is dead! Game over.");
@@ -457,6 +453,7 @@ public class AnimEventListener extends AnimationListener{
         player2.health=3;
         zombies.clear();
        blood.clear();
+        wave=1;
         isfinished=false;
         timer = 0;
         timerHandler = 0;
