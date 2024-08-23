@@ -391,14 +391,16 @@ public class AnimEventListener extends AnimationListener{
     }
 
     private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
-        for (int i = 0; i < zombies.size(); i++) {
-            Zombie zombie= zombies.get(i);
-            if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
-                player.getDamaged();
-                blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
-                zombies.remove(zombie);
-                if (player.playerIsDead()) {
-                    System.out.println("Player is dead! Game over.");
+        if(!player.playerIsDead()){
+            for (int i = 0; i < zombies.size(); i++) {
+                Zombie zombie= zombies.get(i);
+                if (isColliding( player.getX(), player.getY(), playerRadius,zombie.getX(), zombie.getY(), zombieRadius)) {
+                    player.getDamaged();
+                    blood.add(new Blood(zombie.getX(), zombie.getY(), 3000));
+                    zombies.remove(zombie);
+                    if (player.playerIsDead()) {
+                        System.out.println("Player is dead! Game over.");
+                    }
                 }
             }
         }
