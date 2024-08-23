@@ -16,6 +16,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import Sound.Sound;
 
@@ -68,8 +69,8 @@ public class AnimEventListener extends AnimationListener{
             "Menu//BACKBUTTON.png",//67
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
-            "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png" //82 alphabet
-            ,  "Menu//background.png"
+            "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png", //82 alphabet
+            "Menu//Box.png",  "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -82,6 +83,8 @@ public class AnimEventListener extends AnimationListener{
     int zombieAnimationIndex=0;
     int zombieRadius = 3;
     int bulletRadius = 2;
+    boolean play=false;
+    boolean paused= false;
 
 
     TextureReader.Texture[] texture = new TextureReader.Texture[textureNames.length];
@@ -236,14 +239,15 @@ public class AnimEventListener extends AnimationListener{
                         --i;
                     }
                 }
-                if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
-                    handleTimer();
-                    zombieAnimationIndex++;
+                if(!(paused||play)){
+                    if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
+                        handleTimer();
+                        zombieAnimationIndex++;
+                    }
                 }
                 zombieAnimationIndex %= 17;
                 p1AnimationIndex %= player1Move.length;
-
-                player1.updateBullets();
+                if(!paused){player1.updateBullets();}
                 if(!player1.playerIsDead()){
                     drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
                     player1.drawBullets(gl);
@@ -294,7 +298,7 @@ public class AnimEventListener extends AnimationListener{
                         if (isMultiPlayer){
                             spawnZombies(40);
                         }else spawnZombies(25);
-
+                        isfinished = true;
                     }
                 }
 
@@ -310,24 +314,30 @@ public class AnimEventListener extends AnimationListener{
                         player1.MAX_BULLETS = 20;
                         player2.MAX_BULLETS = 20;
                     } else if (wave == 3) {
-
+                        drawBox(gl,textRenderer,"YOU WIN");
+                        play=true;
                     }
                 }
                 for (int z= 0; z <zombies.size() ; z++) {
 
                     Zombie zombie = zombies.get(z);
                     zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
-                    if (!player1.playerIsDead()) {
-                        zombie.move(player1.getX(), player1.getY(), .5);
+                    if(!paused) {
+                        if (!player1.playerIsDead()) {
+                            zombie.move(player1.getX(), player1.getY(), .5);
+                        }
                     }
                     if (isMultiPlayer) {
-                        if (!player1.playerIsDead() && !player2.playerIsDead()) {
-                            zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
-                        } else if (!player1.playerIsDead()) {
-                            zombie.move(player1.getX(), player1.getY(), 0.5);
-                        } else if (!player2.playerIsDead()) {
-                            zombie.move(player2.getX(), player2.getY(), .5);
+                        if(!paused){
+                            if (!player1.playerIsDead() && !player2.playerIsDead()) {
+                                zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
+                            } else if (!player1.playerIsDead()) {
+                                zombie.move(player1.getX(), player1.getY(), 0.5);
+                            } else if (!player2.playerIsDead()) {
+                                zombie.move(player2.getX(), player2.getY(), .5);
+                            }
                         }
+
                     }
                 }
                 zombieHitsPlayer( zombies, player1);
@@ -339,7 +349,10 @@ public class AnimEventListener extends AnimationListener{
                         drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
                         player2.drawBullets(gl);
                     }
-                    player2.updateBullets();
+                    if(!paused){
+                        player2.updateBullets();
+                    }
+
 
                     for (int i = 0; i < player2.health; i++) {
                         drawSprite(gl, 2 + i * 5, 15, 68, 3, 3);
@@ -373,8 +386,20 @@ public class AnimEventListener extends AnimationListener{
                     zombieHitsPlayer( zombies, player2);
                     bulletHitsZombie( zombies, player2);
                 }
-
-
+                if(paused){
+                    drawBox(gl,textRenderer," Paused");
+                }
+                if (!play){
+                    if(isMultiPlayer){
+                        if (player1.playerIsDead()&&player2.playerIsDead()){
+                            drawBox(gl,textRenderer," YOU LOSE");
+                            play=true;
+                        }
+                    } else if (player1.playerIsDead()) {
+                        drawBox(gl,textRenderer," YOU LOSE");
+                        play=true;
+                    }
+                }
                 break;
             case 2:
                 if(whatdraw == 2){
@@ -424,6 +449,25 @@ public class AnimEventListener extends AnimationListener{
         }
 
     }
+    public void resetGame(){
+        player1X = 30 ;
+        player1Y = 34;
+        player2X = 30 ;
+        player2Y = 68;
+        player1.health=3;
+        player2.health=3;
+        zombies.clear();
+       blood.clear();
+        isfinished=false;
+        timer = 0;
+        timerHandler = 0;
+    }
+    private void drawBox(GL gl,TextRenderer textRenderer, String massege){
+        drawSprite(gl,50,50,87,50,30);
+        drawSprite(gl,62,43,62,20,10);
+        drawSprite(gl,38,43,67,20,10);
+        Render(textRenderer,265,400,massege,40);
+    }
     private void Render(TextRenderer textRenderer , int x , int y , String messege , int fontSize) {
         textRenderer = new TextRenderer(new Font("Arial", 1, fontSize));
         textRenderer.beginRendering(700, 700);
@@ -443,92 +487,97 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void handleKeyPress() {
-        if(!player1.playerIsDead()){
-            if (isKeyPressed(KeyEvent.VK_A)) {
-                if (player1.getX() > start_of_x) {
-                    player1.setX(--player1X);
-                    p1AnimationIndex++;
+        if(!(paused||play)){
+            if(!player1.playerIsDead()){
+                if (isKeyPressed(KeyEvent.VK_A)) {
+                    if (player1.getX() > start_of_x) {
+                        player1.setX(--player1X);
+                        p1AnimationIndex++;
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_D)) {
+                    if (player1.getX() < End_of_x ) {
+                        player1.setX(++player1X);
+                        p1AnimationIndex++;
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_W)) {
+                    if (player1.getY() < End_of_Y ) {
+                        player1.setY(++player1Y);
+                        p1AnimationIndex++;
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_S)) {
+                    if (player1.getY() > start_of_y) {
+                        player1.setY(--player1Y);
+                        p1AnimationIndex++;
+                    }
+                }
+                if (isKeyPressed(KeyEvent.VK_Z)) {
+                    player1.shoot();
+                }
+                if(isKeyPressed(KeyEvent.VK_X)){
+                    player1.reload();
                 }
             }
-            if (isKeyPressed(KeyEvent.VK_D)) {
-                if (player1.getX() < End_of_x ) {
-                    player1.setX(++player1X);
-                    p1AnimationIndex++;
+
+            if(!player2.playerIsDead()){
+                if(player2 != null){
+                    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+                        if (player2.getX() > start_of_x) {
+                            player2.setX(--player2X);
+                            if (p2AnimationIndex < 39) {
+                                p2AnimationIndex++;
+                            } else {
+                                p2AnimationIndex = 20;
+                            }
+
+                        }
+                    }
+                    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+                        if (player2.getX() < End_of_x ) {
+                            player2.setX(++player2X);
+                            if (p2AnimationIndex < 39) {
+                                p2AnimationIndex++;
+                            } else {
+                                p2AnimationIndex = 20;
+                            }
+
+                        }
+                    }
+                    if (isKeyPressed(KeyEvent.VK_UP)) {
+                        if (player2.getY() < End_of_Y ) {
+                            player2.setY(++player2Y);
+                            if (p2AnimationIndex < 39) {
+                                p2AnimationIndex++;
+                            } else {
+                                p2AnimationIndex = 20;
+                            }
+
+                        }
+                    }
+                    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+                        if (player2.getY() > start_of_y) {
+                            player2.setY(--player2Y);
+                            if (p2AnimationIndex < 39) {
+                                p2AnimationIndex++;
+                            } else {
+                                p2AnimationIndex = 20;
+                            }
+
+                        }
+                    }
+                    if (isKeyPressed(KeyEvent.VK_SPACE)) {
+                        player2.shoot();
+                    }
+                    if(isKeyPressed(KeyEvent.VK_M)){
+                        player2.reload();
+                    }
                 }
-            }
-            if (isKeyPressed(KeyEvent.VK_W)) {
-                if (player1.getY() < End_of_Y ) {
-                    player1.setY(++player1Y);
-                    p1AnimationIndex++;
-                }
-            }
-            if (isKeyPressed(KeyEvent.VK_S)) {
-                if (player1.getY() > start_of_y) {
-                    player1.setY(--player1Y);
-                    p1AnimationIndex++;
-                }
-            }
-            if (isKeyPressed(KeyEvent.VK_Z)) {
-                player1.shoot();
-            }
-            if(isKeyPressed(KeyEvent.VK_X)){
-                player1.reload();
             }
         }
-
-        if(!player2.playerIsDead()){
-            if(player2 != null){
-                if (isKeyPressed(KeyEvent.VK_LEFT)) {
-                    if (player2.getX() > start_of_x) {
-                        player2.setX(--player2X);
-                        if (p2AnimationIndex < 39) {
-                            p2AnimationIndex++;
-                        } else {
-                            p2AnimationIndex = 20;
-                        }
-
-                    }
-                }
-                if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-                    if (player2.getX() < End_of_x ) {
-                        player2.setX(++player2X);
-                        if (p2AnimationIndex < 39) {
-                            p2AnimationIndex++;
-                        } else {
-                            p2AnimationIndex = 20;
-                        }
-
-                    }
-                }
-                if (isKeyPressed(KeyEvent.VK_UP)) {
-                    if (player2.getY() < End_of_Y ) {
-                        player2.setY(++player2Y);
-                        if (p2AnimationIndex < 39) {
-                            p2AnimationIndex++;
-                        } else {
-                            p2AnimationIndex = 20;
-                        }
-
-                    }
-                }
-                if (isKeyPressed(KeyEvent.VK_DOWN)) {
-                    if (player2.getY() > start_of_y) {
-                        player2.setY(--player2Y);
-                        if (p2AnimationIndex < 39) {
-                            p2AnimationIndex++;
-                        } else {
-                            p2AnimationIndex = 20;
-                        }
-
-                    }
-                }
-                if (isKeyPressed(KeyEvent.VK_SPACE)) {
-                    player2.shoot();
-                }
-                if(isKeyPressed(KeyEvent.VK_M)){
-                    player2.reload();
-                }
-            }
+        if(isKeyPressed(KeyEvent.VK_ESCAPE)&&whatdraw==1){
+           paused=!paused;
         }
     }
 
@@ -603,6 +652,28 @@ public class AnimEventListener extends AnimationListener{
         if(whatdraw==2){
             if(xPosition >=86&& xPosition <= 94 && yPosition >= 4 && yPosition <=7   ){
                 whatdraw=0;
+            }
+        }
+        if(whatdraw==1){
+            if(paused){
+                if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    whatdraw=0;
+                    resetGame();
+                    paused=false;
+                }
+                if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    System.exit(0);
+                }
+            }
+            if(play){
+                if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    whatdraw=0;
+                    resetGame();
+                    play=false;
+                }
+                if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    System.exit(0);
+                }
             }
         }
 
