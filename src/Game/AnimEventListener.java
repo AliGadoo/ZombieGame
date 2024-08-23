@@ -308,7 +308,7 @@ public class AnimEventListener extends AnimationListener{
 
                 if (isMultiPlayer) {
 
-                    if(!player1.playerIsDead()){
+                    if(!player2.playerIsDead()){
                         drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
                         player2.drawBullets(gl);
                     }
