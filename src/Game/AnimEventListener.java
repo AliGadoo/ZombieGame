@@ -439,10 +439,10 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void resetGame(){
-        player1X = 30 ;
-        player1Y = 34;
-        player2X = 30 ;
-        player2Y = 68;
+        player1.setX(30);
+        player1.setY(34);
+        player2.setX(30);
+        player2.setY(68);
         player1.health=3;
         player2.health=3;
         player1.setScore(0);
@@ -615,13 +615,13 @@ public class AnimEventListener extends AnimationListener{
         System.out.println("x "+xPosition+" y "+yPosition);
         if (whatdraw == 0) {
 
-            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 40) {
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 39) {
                 System.exit(0);
             }
 
             //***///
 
-            if(xPosition>= 40 && xPosition <= 60 && yPosition >= 40 && yPosition <= 50){
+            if(xPosition>= 40 && xPosition <= 60 && yPosition >= 42 && yPosition <= 50){
                 whatdraw =2;
             }
             if (xPosition >= 92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5) {
@@ -634,8 +634,13 @@ public class AnimEventListener extends AnimationListener{
             }
 
 
-            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 65 && yPosition <= 75) {
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 66 && yPosition <= 75) {
                 whatdraw = 1;
+                isMultiPlayer = false;
+            }
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 55 && yPosition <= 63) {
+                whatdraw = 1;
+                isMultiPlayer = true;
             }
 
         }
