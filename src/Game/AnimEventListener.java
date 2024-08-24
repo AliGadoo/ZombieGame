@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Gui.Menu;
+import Game.Gui.levels;
 import Game.Players.Bullet;
 import Game.Players.Player;
 import Game.Zombies.Blood;
@@ -26,7 +27,7 @@ public class AnimEventListener extends AnimationListener{
     public static final double start_of_x = 25 ;
     public static final double End_of_Y = MAX_HEIGHT - 29;
     public static final double start_of_y = 12 ;
-
+    public String levelAsString = "Easy";
 
     int player1X = 30 , player1Y = 34;
     Player player1 = new Player(player1X,player1Y);
@@ -71,6 +72,7 @@ public class AnimEventListener extends AnimationListener{
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
             "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png", //82 alphabet
             "Menu//Box.png","Menu//HighScore.png","Menu//MAINMENU.png","Menu//TRYAGAIN.png" ,
+            "Menu//EASY.png","Menu//MEDIUN.png","Menu//HARD.png","Menu//BACKBUTTON.png",
             "Menu//background.png"
     };
 
@@ -78,11 +80,13 @@ public class AnimEventListener extends AnimationListener{
             player2Move = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39},
             zombieMove  ={42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58};
     Menu menu = new Menu();
+    levels level = new levels();
     boolean mute = false;
     ArrayList<Zombie> zombies =new ArrayList<>();
     ArrayList<Blood> blood = new ArrayList<>();
     int zombieAnimationIndex=0;
     int zombieRadius = 3;
+    double zombieSpeed = 0.3;
     int bulletRadius = 2;
     boolean show =false;
     boolean paused= false;
@@ -306,16 +310,16 @@ public class AnimEventListener extends AnimationListener{
                     if(!paused) {
                         if (isMultiPlayer) {
                                 if (!player1.playerIsDead() && !player2.playerIsDead()) {
-                                    zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
+                                    zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), zombieSpeed);
                                 } else if (!player1.playerIsDead()) {
-                                    zombie.move(player1.getX(), player1.getY(), 0.5);
+                                    zombie.move(player1.getX(), player1.getY(), zombieSpeed);
                                 } else if (!player2.playerIsDead()) {
-                                    zombie.move(player2.getX(), player2.getY(), .5);
+                                    zombie.move(player2.getX(), player2.getY(), zombieSpeed);
                                 }
 
                         }else {
                             if (!player1.playerIsDead()) {
-                                zombie.move(player1.getX(), player1.getY(), .5);
+                                zombie.move(player1.getX(), player1.getY(), zombieSpeed);
                             }
                         }
                     }
@@ -405,6 +409,10 @@ public class AnimEventListener extends AnimationListener{
                 drawBackground(gl);
                 drawSprite(gl ,MAX_WIDTH-10 , 5 ,67,12,6 );
                 drawHighScore(menu.readFromFile("HighScore.txt"));
+                break;
+
+            case 4: // levels....
+                level.drawlevels(gl);
                 break;
         }
     }
@@ -659,6 +667,29 @@ public class AnimEventListener extends AnimationListener{
         yPosition = 100 - yPosition;
 
         System.out.println("x "+xPosition+" y "+yPosition);
+//levels....
+        if(whatdraw==4){
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 66 && yPosition <= 75) {
+                playSE(3);
+                whatdraw = 1;
+                levelAsString = "Easy";
+                zombieSpeed = 0.2;
+            }
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 55 && yPosition <= 63) {
+                playSE(3);
+                whatdraw = 1;
+                levelAsString = "Medium";
+                zombieSpeed = 0.5;
+            }
+            if(xPosition>= 40 && xPosition <= 60 && yPosition >= 42 && yPosition <= 50){
+                playSE(3);
+                whatdraw =1;
+                levelAsString = "Hard";
+                zombieSpeed = 0.8;
+            }
+
+
+        }
         if (whatdraw == 0) {
             if(xPosition >=92&& xPosition <= 98 && yPosition >= 2 && yPosition <=8   ){
                 whatdraw=3;
@@ -686,15 +717,21 @@ public class AnimEventListener extends AnimationListener{
 
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 66 && yPosition <= 75) {
                 playSE(3);
-                whatdraw = 1;
+                whatdraw = 4;//levels
                 isMultiPlayer = false;
             }
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 55 && yPosition <= 63) {
                 playSE(3);
-                whatdraw = 1;
+                whatdraw = 4;
                 isMultiPlayer = true;
             }
 
+        }
+        if(whatdraw == 4){
+            if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 39) {
+                playSE(3);
+                whatdraw = 0;
+            }
         }
 
         ////***///
@@ -738,6 +775,9 @@ public class AnimEventListener extends AnimationListener{
                 }
             }
         }
+
+
+
 
     }
 
