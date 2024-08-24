@@ -16,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import Sound.Sound;
 
@@ -83,7 +82,7 @@ public class AnimEventListener extends AnimationListener{
     int zombieAnimationIndex=0;
     int zombieRadius = 3;
     int bulletRadius = 2;
-    boolean play=false;
+    boolean show =false;
     boolean paused= false;
 
 
@@ -210,17 +209,13 @@ public class AnimEventListener extends AnimationListener{
             case 0:
                 menu.drawMenu(gl);
                 if (mute == false) {
-
                 System.out.println("unmute");
                     menu.playsound("StartSound.mp3");
                     menu.mediaPlayer.setMute(false);
-////
                 } else {
                     menu.mediaPlayer.setMute(true);
                 System.out.println("mute");
                 }
-
-
                 break;
             case 1:
                 drawSprite(gl, 50, 50, 69, 100, 100);
@@ -235,7 +230,7 @@ public class AnimEventListener extends AnimationListener{
                         --i;
                     }
                 }
-                if(!(paused||play)){
+                if(!(paused|| show)){
                     if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
                         handleTimer();
                         zombieAnimationIndex++;
@@ -298,42 +293,25 @@ public class AnimEventListener extends AnimationListener{
                     }
                 }
 
-                if (zombies.isEmpty() && isfinished) {
-                    if (wave == 1) {
-                        wave = 2;
-                        isfinished = false;
-                        player1.MAX_BULLETS = 15;
-                        player2.MAX_BULLETS = 15;
-                    } else if (wave == 2) {
-                        wave = 3;
-                        isfinished = false;
-                        player1.MAX_BULLETS = 20;
-                        player2.MAX_BULLETS = 20;
-                    } else if (wave == 3) {
-                        drawBox(gl,textRenderer,"YOU WIN");
-                        play=true;
-                    }
-                }
                 for (int z= 0; z <zombies.size() ; z++) {
 
                     Zombie zombie = zombies.get(z);
                     zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
                     if(!paused) {
-                        if (!player1.playerIsDead()) {
-                            zombie.move(player1.getX(), player1.getY(), .5);
-                        }
-                    }
-                    if (isMultiPlayer) {
-                        if(!paused){
-                            if (!player1.playerIsDead() && !player2.playerIsDead()) {
-                                zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
-                            } else if (!player1.playerIsDead()) {
-                                zombie.move(player1.getX(), player1.getY(), 0.5);
-                            } else if (!player2.playerIsDead()) {
-                                zombie.move(player2.getX(), player2.getY(), .5);
+                        if (isMultiPlayer) {
+                                if (!player1.playerIsDead() && !player2.playerIsDead()) {
+                                    zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), 0.5);
+                                } else if (!player1.playerIsDead()) {
+                                    zombie.move(player1.getX(), player1.getY(), 0.5);
+                                } else if (!player2.playerIsDead()) {
+                                    zombie.move(player2.getX(), player2.getY(), .5);
+                                }
+
+                        }else {
+                            if (!player1.playerIsDead()) {
+                                zombie.move(player1.getX(), player1.getY(), .5);
                             }
                         }
-
                     }
                 }
                 zombieHitsPlayer( zombies, player1);
@@ -382,17 +360,33 @@ public class AnimEventListener extends AnimationListener{
                     zombieHitsPlayer( zombies, player2);
                     bulletHitsZombie( zombies, player2);
                 }
+                if (zombies.isEmpty() && isfinished) {
+                    if (wave == 1) {
+                        wave = 2;
+                        isfinished = false;
+                        player1.MAX_BULLETS = 15;
+                        player2.MAX_BULLETS = 15;
+                    } else if (wave == 2) {
+                        wave = 3;
+                        isfinished = false;
+                        player1.MAX_BULLETS = 20;
+                        player2.MAX_BULLETS = 20;
+                    } else if (wave == 3) {
+                        drawBox(gl, textRenderer, "YOU WIN🏆");
+                        show =true;
+                    }
+                }
                 if(paused){
                     drawBox(gl,textRenderer," Paused");
                 }
                 if(isMultiPlayer){
                     if (player1.playerIsDead()&&player2.playerIsDead()){
                         drawBox(gl,textRenderer," YOU LOSE");
-                        play=true;
+                        show =true;
                     }
                 } else if (player1.playerIsDead()) {
                     drawBox(gl,textRenderer," YOU LOSE");
-                    play=true;
+                    show =true;
                 }
 
                 break;
@@ -451,6 +445,8 @@ public class AnimEventListener extends AnimationListener{
         player2Y = 68;
         player1.health=3;
         player2.health=3;
+        player1.setScore(0);
+        player2.setScore(0);
         zombies.clear();
        blood.clear();
         wave=1;
@@ -483,7 +479,7 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void handleKeyPress() {
-        if(!(paused||play)){
+        if(!(paused|| show)){
             if(!player1.playerIsDead()){
                 if (isKeyPressed(KeyEvent.VK_A)) {
                     if (player1.getX() > start_of_x) {
@@ -661,11 +657,11 @@ public class AnimEventListener extends AnimationListener{
                     System.exit(0);
                 }
             }
-            if(play){
+            if(show){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
                     whatdraw=0;
                     resetGame();
-                    play=false;
+                    show =false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
                     System.exit(0);

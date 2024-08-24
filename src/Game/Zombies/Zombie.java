@@ -25,6 +25,7 @@ public class Zombie {
     }
 
     public void  move(double px, double py , double speed){
+
        double angle =Math.atan2(py-y,px-x);
        direction = Math.toDegrees(angle);
         x += Math.cos(angle) * speed;
@@ -36,10 +37,10 @@ public class Zombie {
         double distancePlayer1 = calculateDistance(player1X, player1Y);
         double distancePlayer2 = calculateDistance(player2X, player2Y);
 
-        if (distancePlayer1 >= distancePlayer2||Math.abs(distancePlayer1-distancePlayer2)<10) {
-            move(player2X, player2Y, speed);
+        if (distancePlayer1 < distancePlayer2) {
+             move(player1X, player1Y, speed);
         } else {
-            move(player1X, player1Y, speed);
+            move(player2X, player2Y, speed);
         }
     }
     private double calculateDistance(double px, double py) {
