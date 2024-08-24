@@ -69,7 +69,7 @@ public class AnimEventListener extends AnimationListener{
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
             "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png", //82 alphabet
-            "Menu//Box.png",  "Menu//background.png"
+            "Menu//Box.png","Menu//MAINMENU.png","Menu//TRYAGAIN.png" , "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -372,20 +372,20 @@ public class AnimEventListener extends AnimationListener{
                         player1.MAX_BULLETS = 20;
                         player2.MAX_BULLETS = 20;
                     } else if (wave == 3) {
-                        drawBox(gl, textRenderer, "YOU WIN🏆");
+                        drawBox(gl, textRenderer, "YOU WIN🏆",59);
                         show =true;
                     }
                 }
                 if(paused){
-                    drawBox(gl,textRenderer," Paused");
+                    drawBox(gl,textRenderer," Paused",89);
                 }
                 if(isMultiPlayer){
                     if (player1.playerIsDead()&&player2.playerIsDead()){
-                        drawBox(gl,textRenderer," YOU LOSE");
+                        drawBox(gl,textRenderer," YOU LOSE",89);
                         show =true;
                     }
                 } else if (player1.playerIsDead()) {
-                    drawBox(gl,textRenderer," YOU LOSE");
+                    drawBox(gl,textRenderer," YOU LOSE",89);
                     show =true;
                 }
 
@@ -460,10 +460,10 @@ public class AnimEventListener extends AnimationListener{
         timer = 0;
         timerHandler = 0;
     }
-    private void drawBox(GL gl,TextRenderer textRenderer, String massege){
+    private void drawBox(GL gl,TextRenderer textRenderer, String massege,int index){
         drawSprite(gl,50,50,87,50,30);
-        drawSprite(gl,62,43,62,20,10);
-        drawSprite(gl,38,43,67,20,10);
+        drawSprite(gl,62,43,88,20,10);
+        drawSprite(gl,38,43,index,20,10);
         Render(textRenderer,265,400,massege,40);
     }
     private void Render(TextRenderer textRenderer , int x , int y , String messege , int fontSize) {
@@ -672,26 +672,28 @@ public class AnimEventListener extends AnimationListener{
         if(whatdraw==1){
             if(paused){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
-                    whatdraw=0;
                     playSE(3);
                     resetGame();
                     paused=false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
                     playSE(3);
-                    System.exit(0);
+                   whatdraw=0;
+                    paused=false;
+                   resetGame();
                 }
             }
             if(show){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
-                    whatdraw=0;
                     playSE(3);
                     resetGame();
                     show =false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
                     playSE(3);
-                    System.exit(0);
+                    whatdraw=0;
+                    show =false;
+                    resetGame();
                 }
             }
         }
