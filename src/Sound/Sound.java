@@ -6,13 +6,20 @@ import java.net.URL;
 
 public class Sound {
     private Clip clip;
-    private URL[] soundURL = new URL[4];
+    private URL[] soundURL = new URL[10];
     private FloatControl volumeControl;
     private boolean isMuted = false;
     private float previousVolume = 0.0f;
 
     public Sound() {
         soundURL[0] = getClass().getResource("../Game/Gui/StartSound.wav");
+        soundURL[3] = getClass().getResource("../Assets/Sound/Click.wav");
+        soundURL[4] = getClass().getResource("../Assets/Sound/Bullets/pistol.wav");
+        soundURL[5] = getClass().getResource("../Assets/Sound/Bullets/emptygun.wav");
+        soundURL[6] = getClass().getResource("../Assets/Sound/Bullets/rifleReload.mp3");
+        soundURL[7] = getClass().getResource("../Assets/Sound/Zombies/zombieBite.wav");
+        soundURL[8] = getClass().getResource("../Assets/Sound/Zombies/zombiehit.wav");
+        soundURL[9] = getClass().getResource("../Assets/Sound/Zombies/Zombies.wav");
     }
 
     public void setFile(int i) {
@@ -35,7 +42,7 @@ public class Sound {
     }
 
     public void play() {
-        if (clip != null) {
+        if (clip != null && !clip.isRunning()) {
             clip.start();
         }
     }

@@ -413,6 +413,7 @@ public class AnimEventListener extends AnimationListener{
                 Zombie zombie = zombies.get(j);
                 if (isColliding(bullet.getX(), bullet.getY(), bulletRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
                     blood.add(new Blood(zombie.getX(), zombie.getY(), 5000));
+                    playSE(7);
                     zombies.remove(zombie);
                     player.getBullets().remove(bullet);
                     player.setScore(player.getScore() + 1);
@@ -428,6 +429,7 @@ public class AnimEventListener extends AnimationListener{
                 Zombie zombie = zombies.get(i);
                 if (isColliding(player.getX(), player.getY(), playerRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
                     player.getDamaged();
+                    playSE(8);
                     blood.add(new Blood(zombie.getX(), zombie.getY(), 5000));
                     zombies.remove(zombie);
                     if (player.playerIsDead()) {
@@ -443,6 +445,10 @@ public class AnimEventListener extends AnimationListener{
         player1.setY(34);
         player2.setX(30);
         player2.setY(68);
+        player1.MAX_BULLETS=10;
+        player2.MAX_BULLETS=10;
+        player1.counterShots=0;
+        player2.counterShots=0;
         player1.health=3;
         player2.health=3;
         player1.setScore(0);
@@ -507,13 +513,15 @@ public class AnimEventListener extends AnimationListener{
                 }
                 if (isKeyPressed(KeyEvent.VK_Z)) {
                     player1.shoot();
+
                 }
                 if(isKeyPressed(KeyEvent.VK_X)){
                     player1.reload();
+                    playSE(6);
                 }
             }
 
-            if(!player2.playerIsDead()){
+            if(!player2.playerIsDead()&&isMultiPlayer){
                 if(player2 != null){
                     if (isKeyPressed(KeyEvent.VK_LEFT)) {
                         if (player2.getX() > start_of_x) {
@@ -561,16 +569,18 @@ public class AnimEventListener extends AnimationListener{
                     }
                     if (isKeyPressed(KeyEvent.VK_SPACE)) {
                         player2.shoot();
+
                     }
                     if(isKeyPressed(KeyEvent.VK_M)){
                         player2.reload();
+                        playSE(6);
                     }
                 }
             }
         }
-        if(isKeyPressed(KeyEvent.VK_ESCAPE)&&whatdraw==1){
-           paused=!paused;
-        }
+//        if(isKeyPressed(KeyEvent.VK_ESCAPE)&&whatdraw==1){
+//           paused=!paused;
+//        }
     }
 
     public BitSet keyBits = new BitSet(256);
@@ -585,6 +595,9 @@ public class AnimEventListener extends AnimationListener{
     public void keyReleased(final KeyEvent event) {
         int keyCode = event.getKeyCode();
         keyBits.clear(keyCode);
+        if (event.getKeyCode()==KeyEvent.VK_ESCAPE&&whatdraw==1){
+            paused=!paused;
+        }
     }
 
     @Override
@@ -616,15 +629,18 @@ public class AnimEventListener extends AnimationListener{
         if (whatdraw == 0) {
 
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 39) {
+                playSE(3);
                 System.exit(0);
             }
 
             //***///
 
             if(xPosition>= 40 && xPosition <= 60 && yPosition >= 42 && yPosition <= 50){
+                playSE(3);
                 whatdraw =2;
             }
             if (xPosition >= 92.5 && xPosition <= 97.5 && yPosition >= 92.5 && yPosition <= 97.5) {
+                playSE(3);
                 mute = !mute;
                 if (menu.mute == 6) {
                     menu.mute = 7;
@@ -633,12 +649,13 @@ public class AnimEventListener extends AnimationListener{
                 }
             }
 
-
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 66 && yPosition <= 75) {
+                playSE(3);
                 whatdraw = 1;
                 isMultiPlayer = false;
             }
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 55 && yPosition <= 63) {
+                playSE(3);
                 whatdraw = 1;
                 isMultiPlayer = true;
             }
@@ -649,26 +666,31 @@ public class AnimEventListener extends AnimationListener{
         if(whatdraw==2){
             if(xPosition >=86&& xPosition <= 94 && yPosition >= 4 && yPosition <=7   ){
                 whatdraw=0;
+                playSE(3);
             }
         }
         if(whatdraw==1){
             if(paused){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
                     whatdraw=0;
+                    playSE(3);
                     resetGame();
                     paused=false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    playSE(3);
                     System.exit(0);
                 }
             }
             if(show){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
                     whatdraw=0;
+                    playSE(3);
                     resetGame();
                     show =false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    playSE(3);
                     System.exit(0);
                 }
             }
@@ -694,6 +716,10 @@ public class AnimEventListener extends AnimationListener{
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+    public  void playSE(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 
 }
