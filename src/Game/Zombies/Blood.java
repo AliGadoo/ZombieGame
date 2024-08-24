@@ -1,8 +1,5 @@
 package Game.Zombies;
-import Game.AnimEventListener;
-import static Game.AnimEventListener.MAX_HEIGHT;
-import static Game.AnimEventListener.MAX_WIDTH;
-import javax.media.opengl.GL;
+
 public class Blood {
     private double x, y;
     long endTime;
