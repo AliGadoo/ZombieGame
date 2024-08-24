@@ -9,6 +9,12 @@ import static Game.AnimEventListener.textureNames;
 import static Game.AnimEventListener.MAX_HEIGHT;
 import static Game.AnimEventListener.MAX_WIDTH;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 //import javafx.util.Duration;
 
 //import sun.audio.AudioPlayer;
@@ -47,8 +53,8 @@ int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
 
         AnimEventListener animEventListener = new AnimEventListener();
         animEventListener.drawBackground(gl);
-//        animEventListener.drawSprite(gl, x, y, indexMenu[0],20 , 10);
-        animEventListener.drawSprite(gl, x, y+30, indexMenu[4],20 , 10);
+
+        animEventListener.drawSprite(gl, MAX_WIDTH-5,  5, 88,10 , 10);        animEventListener.drawSprite(gl, x, y+30, indexMenu[4],20 , 10);
         animEventListener.drawSprite(gl, x, y+18, indexMenu[5],20 , 10);
         animEventListener.drawSprite(gl, x, y+6, indexMenu[2],20 , 10);
         animEventListener.drawSprite(gl, x, y-6, indexMenu[3],20 , 10);
@@ -66,7 +72,26 @@ int indexMenu [] = {59,60,61,62,63,64,65,66,67,68};
 
 
 
-
+    public  void writeToFile(String fileName, String content) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write(content);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public  String readFromFile(String fileName) {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content.toString();
+    }
 
 
         public void playSound(String s, boolean stopCurrent) {

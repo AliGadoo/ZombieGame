@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import Sound.Sound;
-
+import javax.swing.JOptionPane;
 public class AnimEventListener extends AnimationListener{
 
     public static final int MAX_WIDTH = 100, MAX_HEIGHT = 100; // set max height and width to translate sprites using integers
@@ -37,7 +37,8 @@ public class AnimEventListener extends AnimationListener{
     int p1AnimationIndex=0;
     int p2AnimationIndex = 20;
     boolean isMultiPlayer = false;  /////***/////
-
+    TextRenderer textRenderer = new TextRenderer(Font.decode("PLAIN 100"));
+    public String username;
     double xPosition = 0, yPosition = 0;
     int whatdraw = 0;
     int wave =1;
@@ -69,7 +70,8 @@ public class AnimEventListener extends AnimationListener{
             "heart.png","Night.png" , // index 69
             "Digits//0.png","Digits//1.png","Digits//2.png","Digits//3.png","Digits//4.png","Digits//5.png","Digits//6.png","Digits//7.png","Digits//8.png","Digits//9.png", "Digits//slash.png",
             "Menu//HOW TO PLAY.png","//Alphabet//s.png","//Alphabet//c.png","//Alphabet//o.png","//Alphabet//r.png","//Alphabet//e.png", //82 alphabet
-            "Menu//Box.png","Menu//MAINMENU.png","Menu//TRYAGAIN.png" , "Menu//background.png"
+            "Menu//Box.png","Menu//HighScore.png",
+            "Menu//background.png"
     };
 
     int[] player1Move = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16, 17, 18, 19},
@@ -194,7 +196,11 @@ public class AnimEventListener extends AnimationListener{
             }
         }
 
+            username = JOptionPane.showInputDialog("Enter your name: ");
+            if (username == null || username.trim().isEmpty()) {
+                username = "Guest";
 
+            }
     }
 
     @Override
@@ -372,20 +378,20 @@ public class AnimEventListener extends AnimationListener{
                         player1.MAX_BULLETS = 20;
                         player2.MAX_BULLETS = 20;
                     } else if (wave == 3) {
-                        drawBox(gl, textRenderer, "YOU WIN🏆",59);
+                        drawBox(gl, textRenderer, "YOU WIN🏆");
                         show =true;
                     }
                 }
                 if(paused){
-                    drawBox(gl,textRenderer," Paused",89);
+                    drawBox(gl,textRenderer," Paused");
                 }
                 if(isMultiPlayer){
                     if (player1.playerIsDead()&&player2.playerIsDead()){
-                        drawBox(gl,textRenderer," YOU LOSE",89);
+                        drawBox(gl,textRenderer," YOU LOSE");
                         show =true;
                     }
                 } else if (player1.playerIsDead()) {
-                    drawBox(gl,textRenderer," YOU LOSE",89);
+                    drawBox(gl,textRenderer," YOU LOSE");
                     show =true;
                 }
 
@@ -395,8 +401,30 @@ public class AnimEventListener extends AnimationListener{
                     menu.drawHowToPlay(gl,81);}
 
                 break;
-
+            case 3: // High Score
+                drawBackground(gl);
+                drawSprite(gl ,MAX_WIDTH-10 , 5 ,67,12,6 );
+                drawHighScore(menu.readFromFile("HighScore.txt"));
+                break;
         }
+    }
+    public void drawHighScore(String highScore) {
+
+        textRenderer.beginRendering(2000, 1500);
+        textRenderer.setColor(Color.WHITE);
+
+        String[] lines = highScore.split("\n");
+
+        int x = 850;
+        int y = 1100;
+        int lineHeight = 100;
+
+        for (String line : lines) {
+            textRenderer.draw(line, x, y);
+            y -= lineHeight;
+        }
+
+        textRenderer.endRendering();
     }
     private void spawnZombies(int n) {
         for (int i = 0; i < n; i++) {
@@ -460,10 +488,10 @@ public class AnimEventListener extends AnimationListener{
         timer = 0;
         timerHandler = 0;
     }
-    private void drawBox(GL gl,TextRenderer textRenderer, String massege,int index){
+    private void drawBox(GL gl,TextRenderer textRenderer, String massege){
         drawSprite(gl,50,50,87,50,30);
-        drawSprite(gl,62,43,88,20,10);
-        drawSprite(gl,38,43,index,20,10);
+        drawSprite(gl,62,43,62,20,10);
+        drawSprite(gl,38,43,67,20,10);
         Render(textRenderer,265,400,massege,40);
     }
     private void Render(TextRenderer textRenderer , int x , int y , String messege , int fontSize) {
@@ -485,6 +513,7 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void handleKeyPress() {
+
         if(!(paused|| show)){
             if(!player1.playerIsDead()){
                 if (isKeyPressed(KeyEvent.VK_A)) {
@@ -627,7 +656,9 @@ public class AnimEventListener extends AnimationListener{
 
         System.out.println("x "+xPosition+" y "+yPosition);
         if (whatdraw == 0) {
-
+            if(xPosition >=92&& xPosition <= 98 && yPosition >= 2 && yPosition <=8   ){
+                whatdraw=3;
+            }
             if (xPosition >= 40 && xPosition <= 60 && yPosition >= 30 && yPosition <= 39) {
                 playSE(3);
                 System.exit(0);
@@ -669,31 +700,35 @@ public class AnimEventListener extends AnimationListener{
                 playSE(3);
             }
         }
+        if(whatdraw==3){
+            if(xPosition >=86&& xPosition <= 94 && yPosition >= 4 && yPosition <=7   ){
+                whatdraw=0;
+                playSE(3);
+            }
+        }
         if(whatdraw==1){
             if(paused){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    whatdraw=0;
                     playSE(3);
                     resetGame();
                     paused=false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
                     playSE(3);
-                   whatdraw=0;
-                    paused=false;
-                   resetGame();
+                    System.exit(0);
                 }
             }
             if(show){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    whatdraw=0;
                     playSE(3);
                     resetGame();
                     show =false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
                     playSE(3);
-                    whatdraw=0;
-                    show =false;
-                    resetGame();
+                    System.exit(0);
                 }
             }
         }

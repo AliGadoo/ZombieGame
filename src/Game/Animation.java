@@ -1,6 +1,7 @@
 package Game;
 
 
+import Game.Gui.Menu;
 import com.sun.opengl.util.*;
 import java.awt.*;
 import javax.media.opengl.*;
@@ -9,6 +10,7 @@ import javax.swing.*;
 public class Animation extends JFrame {
 
     public static void main(String[] args) {
+
         new Animation();
     }
 
