@@ -469,10 +469,14 @@ public class AnimEventListener extends AnimationListener{
 
     }
     public void resetGame(){
-        player1.setX(30);
-        player1.setY(34);
-        player2.setX(30);
-        player2.setY(68);
+        player1X = 30;
+        player1Y = 34;
+        player1.setX(player1X);
+        player1.setY(player1Y);
+        player2X = 30;
+        player2Y = 68;
+        player2.setX(player2X);
+        player2.setY(player2Y);
         player1.MAX_BULLETS=10;
         player2.MAX_BULLETS=10;
         player1.counterShots=0;
