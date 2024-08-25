@@ -16,5 +16,3 @@ addd: 25
 ali: 100
 ali: 100
 abdo: 5
-
-
