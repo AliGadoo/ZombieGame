@@ -155,7 +155,7 @@ public class AnimEventListener extends AnimationListener{
         double dx = x2-x1;
         double dy = y2-y1;
         double distanceSquare = Math.pow(dx , 2) + Math.pow(dy,2);
-        return distanceSquare <= Math.pow(radius1 + radius1 , 2);
+        return distanceSquare <= Math.pow(radius1 + radius2 , 2);
     }
     void handleTimer(){
         timerHandler++;
