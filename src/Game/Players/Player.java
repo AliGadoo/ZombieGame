@@ -1,6 +1,5 @@
 package Game.Players;
 
-import Game.AnimEventListener;
 import Sound.Sound;
 
 import javax.media.opengl.GL;
@@ -56,7 +55,7 @@ public class Player {
         this.score = score;
     }
 
-    public boolean playerIsDead () {
+    public boolean isDead() {
         return health <= 0;
     }
 
@@ -96,7 +95,7 @@ public class Player {
             bullets.get(i).drawBullet(gl , 3 , 3);
         }
     }
-   public void getDamaged(){
+   public void gotDamaged(){
       health =  health-1;
     }
 

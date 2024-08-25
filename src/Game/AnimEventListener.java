@@ -29,10 +29,10 @@ public class AnimEventListener extends AnimationListener{
     public static final double start_of_y = 12 ;
     public String levelAsString = "Easy";
 
-    int player1X = 30 , player1Y = 34;
+    int player1X = 30 , player1Y = 68;
     Player player1 = new Player(player1X,player1Y);
     int playerRadius = 3;
-    int player2X = 30 , player2Y = 68;
+    int player2X = 30 , player2Y = 34;
     Player player2 = new Player(player2X,player2Y);
     Sound sound = new Sound();
     int p1AnimationIndex=0;
@@ -241,7 +241,7 @@ public class AnimEventListener extends AnimationListener{
                     }
                 }
                 if(!(paused|| show)){
-                    if(!player1.playerIsDead()||(!player2.playerIsDead()&&isMultiPlayer)) {
+                    if(!player1.isDead()||(!player2.isDead()&&isMultiPlayer)) {
                         handleTimer();
                         zombieAnimationIndex++;
                     }
@@ -249,7 +249,7 @@ public class AnimEventListener extends AnimationListener{
                 zombieAnimationIndex %= 17;
                 p1AnimationIndex %= player1Move.length;
                 if(!paused){player1.updateBullets();}
-                if(!player1.playerIsDead()){
+                if(!player1.isDead()){
                     drawSprite(gl, player1.getX(), player1.getY(), p1AnimationIndex, 10, 10);
                     player1.drawBullets(gl);
                 }
@@ -309,16 +309,16 @@ public class AnimEventListener extends AnimationListener{
                     zombie.DrawZombie(gl, zombie.getX(), zombie.getY(), zombieMove[zombieAnimationIndex], 10, 10);
                     if(!paused) {
                         if (isMultiPlayer) {
-                                if (!player1.playerIsDead() && !player2.playerIsDead()) {
+                                if (!player1.isDead() && !player2.isDead()) {
                                     zombie.Move2P(player1.getX(), player1.getY(), player2.getX(), player2.getY(), zombieSpeed);
-                                } else if (!player1.playerIsDead()) {
+                                } else if (!player1.isDead()) {
                                     zombie.move(player1.getX(), player1.getY(), zombieSpeed);
-                                } else if (!player2.playerIsDead()) {
+                                } else if (!player2.isDead()) {
                                     zombie.move(player2.getX(), player2.getY(), zombieSpeed);
                                 }
 
                         }else {
-                            if (!player1.playerIsDead()) {
+                            if (!player1.isDead()) {
                                 zombie.move(player1.getX(), player1.getY(), zombieSpeed);
                             }
                         }
@@ -329,7 +329,7 @@ public class AnimEventListener extends AnimationListener{
 
                 if (isMultiPlayer) {
 
-                    if(!player2.playerIsDead()){
+                    if(!player2.isDead()){
                         drawSprite(gl, player2.getX(), player2.getY(),p2AnimationIndex , 10, 10);
                         player2.drawBullets(gl);
                     }
@@ -390,11 +390,11 @@ public class AnimEventListener extends AnimationListener{
                     drawBox(gl,textRenderer," Paused",90);
                 }
                 if(isMultiPlayer){
-                    if (player1.playerIsDead()&&player2.playerIsDead()){
+                    if (player1.isDead()&&player2.isDead()){
                         drawBox(gl,textRenderer," YOU LOSE",90);
                         show =true;
                     }
-                } else if (player1.playerIsDead()) {
+                } else if (player1.isDead()) {
                     drawBox(gl,textRenderer," YOU LOSE",90);
                     show =true;
 
@@ -461,15 +461,15 @@ public class AnimEventListener extends AnimationListener{
     }
 
     private void zombieHitsPlayer (ArrayList<Zombie> zombies, Player player) {
-        if(!player.playerIsDead()) {
+        if(!player.isDead()) {
             for (int i = 0; i < zombies.size(); i++) {
                 Zombie zombie = zombies.get(i);
                 if (isColliding(player.getX(), player.getY(), playerRadius, zombie.getX(), zombie.getY(), zombieRadius)) {
-                    player.getDamaged();
+                    player.gotDamaged();
                     playSE(8);
                     blood.add(new Blood(zombie.getX(), zombie.getY(), 5000));
                     zombies.remove(zombie);
-                    if (player.playerIsDead()) {
+                    if (player.isDead()) {
                         System.out.println("Player is dead! Game over.");
                     }
                 }
@@ -479,11 +479,11 @@ public class AnimEventListener extends AnimationListener{
     }
     public void resetGame(){
         player1X = 30;
-        player1Y = 34;
+        player1Y = 68;
         player1.setX(player1X);
         player1.setY(player1Y);
         player2X = 30;
-        player2Y = 68;
+        player2Y = 34;
         player2.setX(player2X);
         player2.setY(player2Y);
         player1.MAX_BULLETS=10;
@@ -528,7 +528,7 @@ public class AnimEventListener extends AnimationListener{
     public void handleKeyPress() {
 
         if(!(paused|| show)){
-            if(!player1.playerIsDead()){
+            if(!player1.isDead()){
                 if (isKeyPressed(KeyEvent.VK_A)) {
                     if (player1.getX() > start_of_x) {
                         player1.setX(--player1X);
@@ -563,7 +563,7 @@ public class AnimEventListener extends AnimationListener{
                 }
             }
 
-            if(!player2.playerIsDead()&&isMultiPlayer){
+            if(!player2.isDead()&&isMultiPlayer){
                 if(player2 != null){
                     if (isKeyPressed(KeyEvent.VK_LEFT)) {
                         if (player2.getX() > start_of_x) {
