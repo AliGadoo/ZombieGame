@@ -397,6 +397,7 @@ public class AnimEventListener extends AnimationListener{
                 } else if (player1.playerIsDead()) {
                     drawBox(gl,textRenderer," YOU LOSE",90);
                     show =true;
+
                 }
 
                 break;
@@ -427,8 +428,8 @@ public class AnimEventListener extends AnimationListener{
         int y = 1100;
         int lineHeight = 100;
 
-        for (String line : lines) {
-            textRenderer.draw(line, x, y);
+        for (int i = 0; i < 10; i++) {
+            textRenderer.draw(lines[i], x, y);
             y -= lineHeight;
         }
 
@@ -750,11 +751,25 @@ public class AnimEventListener extends AnimationListener{
         if(whatdraw==1){
             if(paused){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    if (isMultiPlayer) {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore() + " " + player2.getScore()+"\n" +menu.readFromFile("HighScore.txt"));
+
+                    }
+                    else {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore()+"\n"+menu.readFromFile("HighScore.txt") );
+                    }
                     playSE(3);
                     resetGame();
                     paused=false;
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    if (isMultiPlayer) {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore() + " " + player2.getScore()+"\n" +menu.readFromFile("HighScore.txt"));
+
+                    }
+                    else {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore()+"\n"+menu.readFromFile("HighScore.txt") );
+                    }
                     playSE(3);
                     whatdraw=0;
                     paused=false;
@@ -763,15 +778,32 @@ public class AnimEventListener extends AnimationListener{
             }
             if(show){
                 if(xPosition >=28&& xPosition <= 48 && yPosition >= 38 && yPosition <=48){
+                    if (isMultiPlayer) {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore() + " " + player2.getScore()+"\n" +menu.readFromFile("HighScore.txt"));
+
+                    }
+                    else {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore()+"\n"+menu.readFromFile("HighScore.txt") );
+                    }
+
                     playSE(3);
                     resetGame();
                     show =false;
+
                 }
                 if(xPosition >=52&& xPosition <= 72&& yPosition >= 38 && yPosition <=48){
+                    if (isMultiPlayer) {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore() + " " + player2.getScore()+"\n" +menu.readFromFile("HighScore.txt"));
+
+                    }
+                    else {
+                        menu.writeToFile("HighScore.txt",username + ": " +player1.getScore()+"\n"+menu.readFromFile("HighScore.txt") );
+                    }
                     playSE(3);
                     whatdraw=0;
                     show =false;
                     resetGame();
+
                 }
             }
         }
